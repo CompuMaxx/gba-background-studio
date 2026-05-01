@@ -1,20 +1,29 @@
 # ui/shared_utils.py
-from PySide6.QtWidgets import QGraphicsView
-from PySide6.QtGui import QPen, QColor, QImage
-from PySide6.QtCore import Qt, QRect, QPoint, QSize
 
+from ui.qt_compat import (
+    QGraphicsView,
+    QPen,
+    QColor,
+    QImage,
+    Qt,
+    QRect,
+    QPoint,
+    QSize,
+    QGraphicsPixmapItem
+)
 _SEL_PEN = QPen(QColor(255, 255, 0), 2.0)
 _SEL_PEN.setCosmetic(True)
-
 
 def pil_to_qimage(pil_img):
     if pil_img.mode == "RGBA":
         data = pil_img.tobytes("raw", "RGBA")
-        return QImage(data, pil_img.size[0], pil_img.size[1], QImage.Format_RGBA8888)
+        img = QImage(data, pil_img.size[0], pil_img.size[1], QImage.Format_RGBA8888)
+        return img.copy()
     else:
         rgb_img = pil_img.convert("RGB")
         data = rgb_img.tobytes("raw", "RGB")
-        return QImage(data, rgb_img.size[0], rgb_img.size[1], QImage.Format_RGB888)
+        img = QImage(data, rgb_img.size[0], rgb_img.size[1], QImage.Format_RGB888)
+        return img.copy()
 
 class CustomGraphicsView(QGraphicsView):
     def __init__(self, parent=None):
@@ -60,7 +69,7 @@ class CustomGraphicsView(QGraphicsView):
     def _update_paste_preview(self, tx, ty):
         self._remove_paste_preview()
         if self._paste_pixmap and self.scene():
-            from PySide6.QtWidgets import QGraphicsPixmapItem
+
             item = self.scene().addPixmap(self._paste_pixmap)
             item.setPos(tx * 8, ty * 8)
             item.setOpacity(0.6)
@@ -206,7 +215,6 @@ class CustomGraphicsView(QGraphicsView):
         if self.on_tile_leave:
             self.on_tile_leave()
         super().leaveEvent(event)
-
 
 def update_status_bar_shared(main_window, selection_type, selection_id, tile_x, tile_y, 
                            tilemap_data=None, tilemap_width=0, tilemap_height=0, 

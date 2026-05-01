@@ -1,12 +1,31 @@
 # ui/dialogs/conversion_dialog_ui.py
-from PySide6.QtWidgets import (QWidget, QVBoxLayout, QGroupBox, QFormLayout, 
-                               QHBoxLayout, QComboBox, QSpinBox, QLineEdit, 
-                               QCheckBox, QLabel, QStackedWidget, QGraphicsView, 
-                               QGraphicsScene, QProgressBar, QPushButton, 
-                               QRadioButton, QGridLayout, QSplitter, QSizePolicy)
-from PySide6.QtGui import QFont, QPainter
-from PySide6.QtCore import Qt, QTimer
+
 from .auto_spinbox import AutoSpinBox
+from ui.qt_compat import (
+    QWidget,
+    QVBoxLayout,
+    QGroupBox,
+    QFormLayout,
+    QHBoxLayout,
+    QComboBox,
+    QSpinBox,
+    QLineEdit,
+    QCheckBox,
+    QLabel,
+    QStackedWidget,
+    QGraphicsView,
+    QGraphicsScene,
+    QProgressBar,
+    QPushButton,
+    QRadioButton,
+    QGridLayout,
+    QSplitter,
+    QSizePolicy,
+    QFont,
+    QPainter,
+    Qt,
+    QTimer
+)
 
 class ConversionDialogUI:
     def setup_ui(self):
@@ -53,7 +72,9 @@ class ConversionDialogUI:
         self.input_view.setScene(self.input_scene)
         self.input_view.setRenderHint(QPainter.SmoothPixmapTransform, False)
         self.input_view.setStyleSheet("QGraphicsView { background: #f0f0f0; border: 1px solid #ccc; }")
-        self.input_view.setAlignment(Qt.AlignCenter)
+        self.input_view.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self.input_view.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.input_view.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.input_view.setFixedSize(514, 514)
         left_layout.addWidget(self.input_view)
 
@@ -216,6 +237,7 @@ class ConversionDialogUI:
         tc_layout.setSpacing(4)
         self.transparent_color = QLineEdit("0,0,0")
         self.transparent_color.setPlaceholderText("R,G,B (0-255)")
+        self.transparent_color.textChanged.connect(self._update_preview_crop)
         self.eyedropper_btn = QPushButton("🔍")
         self.eyedropper_btn.setFixedSize(24, 24)
         self.eyedropper_btn.setCheckable(True)
@@ -267,7 +289,7 @@ class ConversionDialogUI:
         self.custom_width.setValue(32)
         self.custom_width.valueChanged.connect(self.update_output_info)
         self.custom_height = QSpinBox()
-        self.custom_height.setRange(1, 64)
+        self.custom_height.setRange(1, 256)
         self.custom_height.setValue(20)
         self.custom_height.valueChanged.connect(self.update_output_info)
         custom_layout.addRow(self._tr("conv_width_tiles"), self.custom_width)

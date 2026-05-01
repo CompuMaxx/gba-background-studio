@@ -1,6 +1,5 @@
 # ui/main_window/dialogs.py
-from PySide6.QtWidgets import QMessageBox
-from PySide6.QtCore import Qt
+from ui.qt_compat import QMessageBox, Qt, exec_dialog
 
 def show_contribute(main_window):
     contribute_text = main_window.translator.tr("contribute_text")
@@ -11,9 +10,9 @@ def show_contribute(main_window):
     msg_box.setText(contribute_text)
     msg_box.setIcon(QMessageBox.Information)
     msg_box.setStandardButtons(QMessageBox.Ok)
-    msg_box.exec()
+    exec_dialog(msg_box)
 
 def show_about(main_window):
     from ui.dialogs.about_dialog import AboutDialog
     dlg = AboutDialog(main_window)
-    dlg.exec()
+    exec_dialog(dlg)

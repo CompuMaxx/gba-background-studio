@@ -1,8 +1,16 @@
 # ui/splash_screen.py
-from PySide6.QtWidgets import QSplashScreen, QProgressBar
-from PySide6.QtGui import QPixmap, QPainter, QColor
-from PySide6.QtCore import Qt, QTimer
+
 import os
+from ui.qt_compat import (
+    QSplashScreen,
+    QProgressBar,
+    QPixmap,
+    QPainter,
+    QColor,
+    Qt,
+    QTimer,
+    QApplication
+)
 
 class GBASplashScreen(QSplashScreen):
     def __init__(self, translator=None):
@@ -92,5 +100,5 @@ class GBASplashScreen(QSplashScreen):
         QTimer.singleShot(10, self._process_events)
     
     def _process_events(self):
-        from PySide6.QtWidgets import QApplication
+
         QApplication.processEvents()

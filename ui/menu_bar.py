@@ -1,10 +1,15 @@
 # ui/menu_bar.py
-from PySide6.QtWidgets import QMenu, QMessageBox, QFileDialog
-from PySide6.QtGui import QAction, QKeySequence
-from PySide6.QtCore import Qt
+
 import os
 import shutil
-
+from ui.qt_compat import (
+    QMenu,
+    QMessageBox,
+    QFileDialog,
+    QAction,
+    QKeySequence,
+    Qt
+)
 
 class MenuBar:
     def __init__(self, main_window):
@@ -133,11 +138,11 @@ class MenuBar:
         
         # Tab navigation
         self.action_preview_tab = view_menu.addAction(self.main_window.translator.tr("preview_tab_menu"))
-        self.action_preview_tab.triggered.connect(lambda: self.main_window.main_tabs.setCurrentIndex(0))
+        self.action_preview_tab.triggered.connect(lambda checked=False: self.main_window.main_tabs.setCurrentIndex(0))
         self.action_edit_tiles_tab = view_menu.addAction(self.main_window.translator.tr("edit_tiles_tab_menu"))
-        self.action_edit_tiles_tab.triggered.connect(lambda: self.main_window.main_tabs.setCurrentIndex(1))
+        self.action_edit_tiles_tab.triggered.connect(lambda checked=False: self.main_window.main_tabs.setCurrentIndex(1))
         self.action_edit_palettes_tab = view_menu.addAction(self.main_window.translator.tr("edit_palettes_tab_menu"))
-        self.action_edit_palettes_tab.triggered.connect(lambda: self.main_window.main_tabs.setCurrentIndex(2))
+        self.action_edit_palettes_tab.triggered.connect(lambda checked=False: self.main_window.main_tabs.setCurrentIndex(2))
         
         view_menu.addSeparator()
         
@@ -202,7 +207,7 @@ class MenuBar:
         for lang_code, lang_name in languages.items():
             action = language_menu.addAction(lang_name)
             action.setCheckable(True)
-            action.triggered.connect(lambda checked, lc=lang_code: self.main_window.change_language(lc))
+            action.triggered.connect(lambda checked=False, lc=lang_code: self.main_window.change_language(lc))
             self.language_actions[lang_code] = action
         
         settings_menu.addMenu(language_menu)
@@ -312,7 +317,7 @@ class MenuBar:
         self.action_about.setText(tr("about"))
         self.action_contribute.setText(tr("contribute"))
 
-    def export_files(self):
+    def export_files(self, checked=False):
         output_dir = "output"
         if not os.path.exists(output_dir) or not os.listdir(output_dir):
             QMessageBox.information(self.main_window, self.main_window.translator.tr("export_files"), 
@@ -328,14 +333,27 @@ class MenuBar:
         
         if not target_dir:
             return
+
+        files_to_copy = [
+            f for f in os.listdir(output_dir)
+            if os.path.isfile(os.path.join(output_dir, f))
+        ]
+        existing = [f for f in files_to_copy if os.path.exists(os.path.join(target_dir, f))]
+        if existing:
+            reply = QMessageBox.question(
+                self.main_window,
+                self.main_window.translator.tr("export_files"),
+                self.main_window.translator.tr("export_overwrite_confirm", files="\n".join(existing)),
+                QMessageBox.Yes | QMessageBox.No
+            )
+            if reply != QMessageBox.Yes:
+                return
         
         try:
-            for file_name in os.listdir(output_dir):
+            for file_name in files_to_copy:
                 source_path = os.path.join(output_dir, file_name)
                 target_path = os.path.join(target_dir, file_name)
-                
-                if os.path.isfile(source_path):
-                    shutil.copy2(source_path, target_path)
+                shutil.copy2(source_path, target_path)
             
             QMessageBox.information(self.main_window, self.main_window.translator.tr("export_complete"), 
                                   self.main_window.translator.tr("export_success").format(path=target_dir))

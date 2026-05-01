@@ -1,9 +1,7 @@
 # ui/main_window/main.py
 import os
 from PIL import Image as PilImage
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTabWidget
-from PySide6.QtGui import QPixmap
+
 from ..custom_status_bar import CustomStatusBar
 from ..preview_tab import PreviewTab
 from ..edit_tiles_tab import EditTilesTab
@@ -14,7 +12,18 @@ from core.config_manager import ConfigManager
 from ..hover_manager import HoverManager
 from ..grid_manager import GridManager
 from ..history_manager import HistoryManager
-
+from ui.qt_compat import (
+    Qt,
+    QMainWindow,
+    QWidget,
+    QVBoxLayout,
+    QTabWidget,
+    QPixmap,
+    QIcon,
+    QBrush,
+    QColor,
+    exec_dialog,
+)
 
 class GBABackgroundStudio(QMainWindow):
     def __init__(self):
@@ -56,6 +65,7 @@ class GBABackgroundStudio(QMainWindow):
         self.current_status_message = self.translator.tr("ready_status")
         self.last_tile_pos = (-1, -1)
         self._last_image_directory = None
+        self._last_save_directory = None
 
         self.hover_manager = HoverManager()
         self.grid_manager = GridManager()
@@ -197,7 +207,7 @@ class GBABackgroundStudio(QMainWindow):
 
     def set_window_icon(self):
         try:
-            from PySide6.QtGui import QIcon
+
             
             app_icon = QIcon()
             icon_sizes = [
@@ -229,7 +239,7 @@ class GBABackgroundStudio(QMainWindow):
         try:
             from PIL import Image
             from ui.shared_utils import pil_to_qimage
-            from PySide6.QtGui import QPixmap
+
             
             with Image.open(preview_path) as f:
                 preview_img = f.copy()
@@ -263,13 +273,13 @@ class GBABackgroundStudio(QMainWindow):
             import traceback
             traceback.print_exc()
 
-    def undo(self):
+    def undo(self, checked=False):
         if hasattr(self, 'history_manager'):
             state = self.history_manager.undo()
             if state:
                 self.apply_history_state(state, is_undo=True)
 
-    def redo(self):
+    def redo(self, checked=False):
         if hasattr(self, 'history_manager'):
             state = self.history_manager.redo()
             if state:
@@ -321,7 +331,7 @@ class GBABackgroundStudio(QMainWindow):
 
         ep = self.edit_palettes_tab
         ep.palette_colors = list(colors)
-        from PySide6.QtGui import QBrush, QColor
+
         for i, (r, g, b) in enumerate(colors):
             if i < len(ep.palette_rects):
                 ep.palette_rects[i].setBrush(QBrush(QColor(r, g, b)))
@@ -660,63 +670,63 @@ class GBABackgroundStudio(QMainWindow):
         from .view_ops import setup_wheel_events
         setup_wheel_events(self)
     
-    def open_image_for_conversion(self):
+    def open_image_for_conversion(self, checked=False):
         from .file_ops import open_image_for_conversion
         open_image_for_conversion(self)
     
-    def convert_to_4bpp(self):
+    def convert_to_4bpp(self, checked=False):
         from .file_ops import convert_to_4bpp
         convert_to_4bpp(self)
 
-    def convert_to_8bpp(self):
+    def convert_to_8bpp(self, checked=False):
         from .file_ops import convert_to_8bpp
         convert_to_8bpp(self)
 
-    def convert_to_text_mode(self):
+    def convert_to_text_mode(self, checked=False):
         from .file_ops import convert_to_text_mode
         convert_to_text_mode(self)
 
-    def convert_to_rot_mode(self):
+    def convert_to_rot_mode(self, checked=False):
         from .file_ops import convert_to_rot_mode
         convert_to_rot_mode(self)
 
-    def optimize_tiles(self):
+    def optimize_tiles(self, checked=False):
         from .file_ops import optimize_tiles
         optimize_tiles(self)
 
-    def deoptimize_tiles(self):
+    def deoptimize_tiles(self, checked=False):
         from .file_ops import deoptimize_tiles
         deoptimize_tiles(self)
 
-    def open_tileset(self):
+    def open_tileset(self, checked=False):
         from .file_ops import open_tileset
         open_tileset(self)
     
-    def save_tileset(self):
+    def save_tileset(self, checked=False):
         from .file_ops import save_tileset
         save_tileset(self)
     
-    def open_tilemap(self):
+    def open_tilemap(self, checked=False):
         from .file_ops import open_tilemap
         open_tilemap(self)
     
-    def new_tilemap(self):
+    def new_tilemap(self, checked=False):
         from .file_ops import new_tilemap
         new_tilemap(self)
     
-    def save_tilemap(self):
+    def save_tilemap(self, checked=False):
         from .file_ops import save_tilemap
         save_tilemap(self)
     
-    def save_selection(self):
+    def save_selection(self, checked=False):
         from .file_ops import save_selection
         save_selection(self)
     
-    def open_palette(self):
+    def open_palette(self, checked=False):
         from .file_ops import open_palette
         open_palette(self)
     
-    def save_palette(self):
+    def save_palette(self, checked=False):
         from .file_ops import save_palette
         save_palette(self)
     
@@ -732,15 +742,15 @@ class GBABackgroundStudio(QMainWindow):
         from .config import toggle_keep_temp
         toggle_keep_temp(self, checked)
     
-    def reset_zoom(self):
+    def reset_zoom(self, checked=False):
         from .view_ops import reset_zoom
         reset_zoom(self)
     
-    def zoom_in(self):
+    def zoom_in(self, checked=False):
         from .view_ops import zoom_in
         zoom_in(self)
     
-    def zoom_out(self):
+    def zoom_out(self, checked=False):
         from .view_ops import zoom_out
         zoom_out(self)
     
@@ -764,10 +774,10 @@ class GBABackgroundStudio(QMainWindow):
         from .config import toggle_grid
         toggle_grid(self, checked)
 
-    def open_display_settings(self):
+    def open_display_settings(self, checked=False):
         from ui.dialogs.display_settings_dialog import DisplaySettingsDialog
         dlg = DisplaySettingsDialog(self, parent=self)
-        dlg.exec()
+        exec_dialog(dlg)
     
     def toggle_status_bar(self, checked):
         from .config import toggle_status_bar
@@ -789,11 +799,11 @@ class GBABackgroundStudio(QMainWindow):
         from .utils import recreate_menu
         recreate_menu(self)
     
-    def show_contribute(self):
+    def show_contribute(self, checked=False):
         from .dialogs import show_contribute
         show_contribute(self)
     
-    def show_about(self):
+    def show_about(self, checked=False):
         from .dialogs import show_about
         show_about(self)
     

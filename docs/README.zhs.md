@@ -1,4 +1,4 @@
-<p align="center"><img width="1868" height="560" src="assets/readme/banner.png" alt="Image" /></p>
+<p align="center"><img width="1868" height="560" src="../assets/readme/banner.png" alt="Image" /></p>
 <div align="center"><a href="https://discord.gg/wsFFExCWFu"><img src="https://img.shields.io/discord/1073012182264066099" alt="Discord"></a></div>
 
 ## GBA Background Studio
@@ -14,7 +14,7 @@
 此 README 提供以下语言版本：
 
 <p align="center">
-  <a href="README.md">English</a> | <a href="README.spa.md">Español</a> | <a href="README.brp.md">Português (BR)</a> | <a href="README.fra.md">Français</a> | <a href="README.deu.md">Deutsch</a> | <a href="README.ita.md">Italiano</a> | <a href="README.por.md">Português</a> | <a href="README.nld.md">Nederlands</a> | <a href="README.pol.md">Polski</a><br>
+  <a href="../README.md">English</a> | <a href="README.spa.md">Español</a> | <a href="README.brp.md">Português (BR)</a> | <a href="README.fra.md">Français</a> | <a href="README.deu.md">Deutsch</a> | <a href="README.ita.md">Italiano</a> | <a href="README.por.md">Português</a> | <a href="README.nld.md">Nederlands</a> | <a href="README.pol.md">Polski</a><br>
   <a href="README.tur.md">Türkçe</a> | <a href="README.vie.md">Tiếng Việt</a> | <a href="README.ind.md">Bahasa Indonesia</a> | <a href="README.hin.md">हिन्दी</a> | <a href="README.rus.md">Русский</a> | <a href="README.jpn.md">日本語</a> | <a href="README.zhs.md">简体中文</a> | <a href="README.zht.md">繁體中文</a> | <a href="README.kor.md">한국어</a>
 </p>
 
@@ -57,19 +57,19 @@
 
 ## 🖼️ 截图
 
-<p align="center"><img width="896" height="590" src="assets/readme/zhs_conversion_interfaz.png" alt="Image" /></p>
+<p align="center"><img width="896" height="590" src="../assets/readme/zhs_conversion_interfaz.png" alt="Image" /></p>
 
-<p align="center"><img width="796" height="676" src="assets/readme/zhs_preview.png" alt="Image" /></p>
+<p align="center"><img width="796" height="676" src="../assets/readme/zhs_preview.png" alt="Image" /></p>
 
-<p align="center"><img width="796" height="676" src="assets/readme/zhs_edit_tiles.png" alt="Image" /></p>
+<p align="center"><img width="796" height="676" src="../assets/readme/zhs_edit_tiles.png" alt="Image" /></p>
 
-<p align="center"><img width="796" height="676" src="assets/readme/zhs_edit_palettes.png" alt="Image" /></p>
+<p align="center"><img width="796" height="676" src="../assets/readme/zhs_edit_palettes.png" alt="Image" /></p>
 
 ---
 
 ## 🏗️ 架构说明
 
-GBA Background Studio 使用 **Python** 和 **PySide6** 构建，遵循模块化界面设计：
+GBA Background Studio 使用 **Python** 和 **PySide6 / PySide2**（混合）构建，遵循模块化界面设计：
 
 - **主窗口（`GBABackgroundStudio`）**
   - 管理应用程序状态（当前 BPP、缩放级别、图块和调色板选择）。
@@ -93,38 +93,54 @@ GBA Background Studio 使用 **Python** 和 **PySide6** 构建，遵循模块化
 
 ## 📦 安装
 
-### 要求
-- **Python** (推荐 3.12+)
-- **Pip** (Python 包管理器)
-- **PySide6 的操作系统支持：**
-  - **Windows:** Windows 10 (版本 1809) 或更高版本。
-  - **macOS:** macOS 11 (Big Sur) 或更高版本。
-  - **Linux:** 带有 glibc 2.28 或更高版本的现代发行版。
+### 选项 1 — 安装程序（推荐）
 
-### 依赖项
-核心依赖项包括：
-- `PySide6` (Qt for Python) - *注意：需要上述操作系统版本。*
-- `Pillow` (PIL) 用于图像处理。
+从 [GitHub Releases](https://github.com/CompuMaxx/gba-background-studio/releases) 下载最新版本：
 
-您可以使用以下命令安装依赖项：
+| 安装程序 | Python | 操作系统 |
+|---|---|---|
+| `GBABackgroundStudio_Setup.exe` | 已内置（无需安装） | Windows 10 / 11 |
+| `GBABackgroundStudio_Legacy_Setup.exe` | 已内置（无需安装） | Windows 7 / 8 / 8.1 |
+
+只需运行安装程序并启动应用 — 无需 Python 或 pip。
+
+---
+
+### 选项 2 — 从源码运行
+
+#### 要求
+
+| 环境 | Python | Qt 后端 | 操作系统 |
+|---|---|---|---|
+| **现代** | 3.10+ | PySide6 (自动) | Windows 10/11, macOS 11+, Linux |
+| **旧版** | 3.8 / 3.9 | PySide2 5.15.2 (自动) | Windows 7 / 8 / 8.1 |
+
+应用程序根据您的 Python 版本自动检测使用哪个 Qt 后端 — 无需手动配置。
+
+#### 依赖项
+
 ```bash
 pip install -r requirements.txt
 ```
 
+`requirements.txt` 自动安装正确的 Qt 后端：
+- **Python ≥ 3.10** → `PySide6`
+- **Python 3.8 / 3.9** → `PySide2 5.15.2`
+
+其他依赖项：`Pillow`、`numpy`、`scipy`、`scikit-learn`、`opencv-python`、`certifi`。
+
 ---
 
-### 🏛️ 旧版操作系统支持 (Windows 7 / 8 / 8.1)
-如果您使用的旧版本 Windows 不支持 **PySide6**（图形界面框架），您仍然可以通过我们的**多语言命令行向导**使用核心转换引擎。
+### 🏛️ 旧版系统支持（Windows 7 / 8 / 8.1）
 
-#### 要求
-- **Python** (推荐 3.8+)
+完整图形界面可在 Windows 7 及更高版本上运行。使用 **Python 3.8**，`requirements.txt` 将自动安装 **PySide2 5.15.2**。
 
-这允许您在没有图形界面的情况下，使用母语的分步向导将图像转换为 GBA 资源。
+此外，**多语言命令行向导** (`GBA_Studio_Wizard.bat`) 可用于无 GUI 的批量转换，适用于安装了 Python 3.8+ 的任何 Windows 版本：
 
 1. 导航到项目根目录。
-2. 运行 **`GBA_Studio_Wizard.bat`** 文件。
+2. 运行 **`GBA_Studio_Wizard.bat`**。
 3. 选择您的语言（支持 18 种语言）。
-4. 按照说明拖放图像并配置 GBA 输出。
+4. 按照分步说明转换您的图像。
 
 ---
 

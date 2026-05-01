@@ -1,10 +1,18 @@
 # ui/dialogs/convert_bpp_dialogs.py
-from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
-                                QCheckBox, QSpinBox, QPushButton, QGridLayout,
-                                QWidget, QFrame)
-from PySide6.QtCore import Qt
 
-
+from ui.qt_compat import (
+    QDialog,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QCheckBox,
+    QSpinBox,
+    QPushButton,
+    QGridLayout,
+    QWidget,
+    QFrame,
+    Qt
+)
 class Convert4BppDialog(QDialog):
     def __init__(self, color_count, parent=None):
         super().__init__(parent)
@@ -81,7 +89,6 @@ class Convert4BppDialog(QDialog):
 
     def selected_palettes(self):
         return [i for i, cb in enumerate(self._checks) if cb.isChecked()]
-
 
 class Convert8BppDialog(QDialog):
     def __init__(self, parent=None):

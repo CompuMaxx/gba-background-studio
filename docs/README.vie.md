@@ -1,4 +1,4 @@
-<p align="center"><img width="1868" height="560" src="assets/readme/banner.png" alt="Image" /></p>
+<p align="center"><img width="1868" height="560" src="../assets/readme/banner.png" alt="Image" /></p>
 <div align="center"><a href="https://discord.gg/wsFFExCWFu"><img src="https://img.shields.io/discord/1073012182264066099" alt="Discord"></a></div>
 
 ## GBA Background Studio
@@ -14,7 +14,7 @@
 README này có sẵn bằng các ngôn ngữ sau:
 
 <p align="center">
-  <a href="README.md">English</a> | <a href="README.spa.md">Español</a> | <a href="README.brp.md">Português (BR)</a> | <a href="README.fra.md">Français</a> | <a href="README.deu.md">Deutsch</a> | <a href="README.ita.md">Italiano</a> | <a href="README.por.md">Português</a> | <a href="README.nld.md">Nederlands</a> | <a href="README.pol.md">Polski</a><br>
+  <a href="../README.md">English</a> | <a href="README.spa.md">Español</a> | <a href="README.brp.md">Português (BR)</a> | <a href="README.fra.md">Français</a> | <a href="README.deu.md">Deutsch</a> | <a href="README.ita.md">Italiano</a> | <a href="README.por.md">Português</a> | <a href="README.nld.md">Nederlands</a> | <a href="README.pol.md">Polski</a><br>
   <a href="README.tur.md">Türkçe</a> | <a href="README.vie.md">Tiếng Việt</a> | <a href="README.ind.md">Bahasa Indonesia</a> | <a href="README.hin.md">हिन्दी</a> | <a href="README.rus.md">Русский</a> | <a href="README.jpn.md">日本語</a> | <a href="README.zhs.md">简体中文</a> | <a href="README.zht.md">繁體中文</a> | <a href="README.kor.md">한국어</a>
 </p>
 
@@ -57,19 +57,19 @@ README này có sẵn bằng các ngôn ngữ sau:
 
 ## 🖼️ Ảnh chụp màn hình
 
-<p align="center"><img width="896" height="590" src="assets/readme/vie_conversion_interfaz.png" alt="Image" /></p>
+<p align="center"><img width="896" height="590" src="../assets/readme/vie_conversion_interfaz.png" alt="Image" /></p>
 
-<p align="center"><img width="1009" height="676" src="assets/readme/vie_preview.png" alt="Image" /></p>
+<p align="center"><img width="1009" height="676" src="../assets/readme/vie_preview.png" alt="Image" /></p>
 
-<p align="center"><img width="1009" height="676" src="assets/readme/vie_edit_tiles.png" alt="Image" /></p>
+<p align="center"><img width="1009" height="676" src="../assets/readme/vie_edit_tiles.png" alt="Image" /></p>
 
-<p align="center"><img width="1009" height="676" src="assets/readme/vie_edit_palettes.png" alt="Image" /></p>
+<p align="center"><img width="1009" height="676" src="../assets/readme/vie_edit_palettes.png" alt="Image" /></p>
 
 ---
 
 ## 🏗️ Mô tả kiến trúc
 
-GBA Background Studio được xây dựng bằng **Python** và **PySide6**, theo thiết kế giao diện mô-đun:
+GBA Background Studio được xây dựng bằng **Python** và **PySide6 / PySide2** (kết hợp), theo thiết kế giao diện mô-đun:
 
 - **Cửa sổ chính (`GBABackgroundStudio`)**
   - Quản lý trạng thái ứng dụng (BPP hiện tại, mức thu phóng, lựa chọn ô gạch và bảng màu).
@@ -93,38 +93,54 @@ GBA Background Studio được xây dựng bằng **Python** và **PySide6**, th
 
 ## 📦 Cài đặt
 
-### Yêu cầu
-- **Python** (Khuyến nghị 3.12+)
-- **Pip** (Trình quản lý gói Python)
-- **Hỗ trợ hệ điều hành cho PySide6:**
-  - **Windows:** Windows 10 (Phiên bản 1809) trở lên.
-  - **macOS:** macOS 11 (Big Sur) trở lên.
-  - **Linux:** Các bản phân phối hiện đại với glibc 2.28 trở lên.
+### Tùy chọn 1 — Trình cài đặt (khuyến nghị)
 
-### Các thư viện phụ thuộc
-Các thư viện chính bao gồm:
-- `PySide6` (Qt cho Python) - *Lưu ý: Yêu cầu các phiên bản hệ điều hành được đề cập ở trên.*
-- `Pillow` (PIL) để xử lý hình ảnh.
+Tải xuống phiên bản mới nhất từ [GitHub Releases](https://github.com/CompuMaxx/gba-background-studio/releases):
 
-Bạn có thể cài đặt các thư viện bằng lệnh:
+| Trình cài đặt | Python | Hệ điều hành |
+|---|---|---|
+| `GBABackgroundStudio_Setup.exe` | Tích hợp sẵn (không cần cài đặt) | Windows 10 / 11 |
+| `GBABackgroundStudio_Legacy_Setup.exe` | Tích hợp sẵn (không cần cài đặt) | Windows 7 / 8 / 8.1 |
+
+Chỉ cần chạy trình cài đặt và khởi động ứng dụng — không cần Python hay pip.
+
+---
+
+### Tùy chọn 2 — Chạy từ mã nguồn
+
+#### Yêu cầu
+
+| Môi trường | Python | Backend Qt | Hệ điều hành |
+|---|---|---|---|
+| **Hiện đại** | 3.10+ | PySide6 (tự động) | Windows 10/11, macOS 11+, Linux |
+| **Legacy** | 3.8 / 3.9 | PySide2 5.15.2 (tự động) | Windows 7 / 8 / 8.1 |
+
+Ứng dụng tự động phát hiện backend Qt nào cần sử dụng dựa trên phiên bản Python của bạn — không cần cấu hình thủ công.
+
+#### Các thư viện phụ thuộc
+
 ```bash
 pip install -r requirements.txt
 ```
 
+`requirements.txt` tự động cài đặt backend Qt phù hợp:
+- **Python ≥ 3.10** → `PySide6`
+- **Python 3.8 / 3.9** → `PySide2 5.15.2`
+
+Các thư viện khác: `Pillow`, `numpy`, `scipy`, `scikit-learn`, `opencv-python`, `certifi`.
+
 ---
 
-### 🏛️ Hỗ trợ hệ điều hành cũ (Windows 7 / 8 / 8.1)
-Nếu bạn đang sử dụng phiên bản Windows cũ hơn không hỗ trợ **PySide6** (khung giao diện đồ họa), bạn vẫn có thể sử dụng công cụ chuyển đổi cốt lõi thông qua **Trình hướng dẫn dòng lệnh đa ngôn ngữ** của chúng tôi.
+### 🏛️ Hỗ trợ Hệ thống Legacy (Windows 7 / 8 / 8.1)
 
-#### Yêu cầu
-- **Python** (Khuyến nghị 3.8+)
+Giao diện đồ họa đầy đủ chạy trên Windows 7 trở lên. Sử dụng **Python 3.8** và `requirements.txt` sẽ tự động cài đặt **PySide2 5.15.2**.
 
-Điều này cho phép bạn chuyển đổi hình ảnh thành tài nguyên GBA mà không cần giao diện đồ họa, sử dụng hướng dẫn từng bước bằng ngôn ngữ mẹ đẻ của bạn.
+Ngoài ra, **Trợ lý Dòng lệnh Đa ngôn ngữ** (`GBA_Studio_Wizard.bat`) có sẵn để chuyển đổi hàng loạt mà không cần giao diện đồ họa, và hoạt động trên bất kỳ phiên bản Windows nào với Python 3.8+:
 
 1. Điều hướng đến thư mục gốc của dự án.
-2. Chạy tệp **`GBA_Studio_Wizard.bat`**.
+2. Chạy **`GBA_Studio_Wizard.bat`**.
 3. Chọn ngôn ngữ của bạn (hỗ trợ 18 ngôn ngữ).
-4. Làm theo hướng dẫn để kéo và thả hình ảnh của bạn và cấu hình đầu ra GBA.
+4. Làm theo hướng dẫn từng bước để chuyển đổi hình ảnh của bạn.
 
 ---
 

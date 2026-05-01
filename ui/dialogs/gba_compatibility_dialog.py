@@ -1,7 +1,14 @@
 # ui/dialogs/gba_compatibility_dialog.py
-from PySide6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
-from PySide6.QtCore import Qt
+
 from utils.translator import Translator
+from ui.qt_compat import (
+    QDialog,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    Qt
+)
 
 translator = Translator()
 

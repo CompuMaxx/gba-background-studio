@@ -1,10 +1,18 @@
 # ui/dialogs/new_tilemap_dialog.py
-from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QLabel,
-    QSpinBox, QComboBox, QPushButton, QStackedWidget, QWidget, QFormLayout
-)
-from core.config import ROT_SIZES as _ROT_SIZES
 
+from core.config import ROT_SIZES as _ROT_SIZES
+from ui.qt_compat import (
+    QDialog,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QSpinBox,
+    QComboBox,
+    QPushButton,
+    QStackedWidget,
+    QWidget,
+    QFormLayout
+)
 
 class NewTilemapDialog(QDialog):
     def __init__(self, parent=None):

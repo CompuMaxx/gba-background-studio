@@ -1,8 +1,6 @@
 # ui/custom_status_bar.py
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel
-from PySide6.QtCore import Qt
 
-
+from ui.qt_compat import QWidget, QHBoxLayout, QLabel, Qt
 class CustomStatusBar(QWidget):
     def __init__(self, translator=None, parent=None):
         super().__init__(parent)
@@ -25,13 +23,17 @@ class CustomStatusBar(QWidget):
         self.palette_label = QLabel(self.tr("status_palette", id="0"))
         self.flip_label = QLabel(self.tr("status_flip", state="None"))
         self.zoom_label = QLabel(self.tr("zoom_level", level=100))
-        
+        self.sel_area_label = QLabel()
+        self.sel_area_label.hide()
+        self._sel_area_wh = None
+
         layout.addWidget(self.selection_label)
         layout.addWidget(self.tilemap_label)
         layout.addWidget(self.tile_label)
         layout.addWidget(self.palette_label)
         layout.addWidget(self.flip_label)
         layout.addWidget(self.zoom_label)
+        layout.addWidget(self.sel_area_label)
         layout.addStretch()
         
     def update_status(self, selection_type="Tile", selection_id="-", tilemap_pos=(-1, -1),
@@ -63,5 +65,18 @@ class CustomStatusBar(QWidget):
         self.flip_label.setText(self.tr("status_flip", state="None"))
         self.zoom_label.setText(self.tr("zoom_level", level=zoom_level))
 
+    def set_sel_area_info(self, w, h):
+        self._sel_area_wh = (w, h)
+        self.sel_area_label.setText(self.tr("status_sel_area", w=w, h=h, wpx=w*8, hpx=h*8))
+        self.sel_area_label.show()
+
+    def clear_sel_area_info(self):
+        self._sel_area_wh = None
+        self.sel_area_label.hide()
+        self.sel_area_label.setText("")
+
     def retranslate_ui(self, zoom_level=100):
         self.restore_default_status(zoom_level)
+        if self._sel_area_wh:
+            w, h = self._sel_area_wh
+            self.sel_area_label.setText(self.tr("status_sel_area", w=w, h=h, wpx=w*8, hpx=h*8))

@@ -1,9 +1,18 @@
 # ui/main_window/toolbar.py
 import os
-from PySide6.QtWidgets import QFrame, QHBoxLayout, QToolButton, QWidget, QTabBar
-from PySide6.QtGui import QIcon, QKeySequence, QPixmap, QCursor
-from PySide6.QtCore import Qt, QSize
-
+from ui.qt_compat import (
+    QFrame,
+    QHBoxLayout,
+    QToolButton,
+    QWidget,
+    QTabBar,
+    QIcon,
+    QKeySequence,
+    QPixmap,
+    QCursor,
+    Qt,
+    QSize
+)
 
 def _icon(name):
     path = os.path.join("assets", "toolbar", f"{name}.svg")
@@ -45,7 +54,6 @@ def _make_group(buttons_and_seps):
         row.addWidget(item)
     w.adjustSize()
     return w
-
 
 class ContextToolbar:
     def __init__(self, main_window, tab_widget):
@@ -270,6 +278,9 @@ class ContextToolbar:
                         )
                         swap_ok = area_count == total
             self.btn_pal_swap.setEnabled(swap_ok)
+        
+        if hasattr(self, 'main_window') and self.main_window:
+            self.main_window.menu_bar.action_save_selection.setEnabled(has_selection)
 
     def on_pal_selection_changed(self, has_selection: bool):
         mode_active = self.btn_pencil_pal.isChecked() or self.btn_fill.isChecked()

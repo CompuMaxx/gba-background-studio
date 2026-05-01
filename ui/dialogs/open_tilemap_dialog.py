@@ -1,13 +1,17 @@
 # ui/dialogs/open_tilemap_dialog.py
-from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QLabel,
-    QComboBox, QPushButton
-)
-from core.config import ROT_SIZES as _ROT_SIZES
 
+from core.config import ROT_SIZES as _ROT_SIZES
+from ui.qt_compat import (
+    QDialog,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QComboBox,
+    QPushButton
+)
 
 def _get_possible_dimensions(total_tiles):
-    priority_w = [20, 32, 64]
+    priority_w = [32, 20, 64]
     priority = []
     others = []
 
@@ -15,19 +19,18 @@ def _get_possible_dimensions(total_tiles):
         if total_tiles % w == 0:
             h = total_tiles // w
             if 1 <= h <= 512:
-                if w == 20 or w == 32:
+                if w == 32 or w == 20:
                     priority.append((w, h))
                 elif w == 64 and h % 32 == 0:
                     priority.append((w, h))
                 elif w < 32 and w != 20:
                     others.append((w, h))
 
-    order = {20: 0, 32: 1, 64: 2}
+    order = {32: 0, 20: 1, 64: 2}
     priority.sort(key=lambda p: (order.get(p[0], 99), p[1]))
     others.sort(key=lambda p: p[0])
 
     return priority + others
-
 
 class OpenTilemapDialog(QDialog):
     def __init__(self, total_tiles, parent=None):

@@ -1,27 +1,80 @@
 # ui/dialogs/about_dialog.py
 import sys
+import ssl
 import tempfile
 import webbrowser
 import urllib.request
 import urllib.error
 import json
-
-from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QLabel,
-    QPushButton, QMessageBox
+from ui.qt_compat import (
+    QDialog,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QMessageBox,
+    Qt,
+    QThread,
+    Signal
 )
-from PySide6.QtCore import Qt, QThread, Signal
 
+def _make_ssl_context():
+    try:
+        import certifi
+        return ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        pass
+
+    if sys.platform == "win32":
+        try:
+            ctx = ssl.create_default_context()
+            import ctypes
+            import ctypes.wintypes
+            ctx.load_default_certs(ssl.Purpose.SERVER_AUTH)
+            return ctx
+        except Exception:
+            pass
+
+        try:
+            import tempfile, os, subprocess
+            tmp = tempfile.NamedTemporaryFile(suffix='.pem', delete=False)
+            tmp.close()
+            result = subprocess.run(
+                ['certutil', '-exportPFX', '-p', '', 'Root', tmp.name],
+                capture_output=True, timeout=5
+            )
+            if os.path.exists(tmp.name) and os.path.getsize(tmp.name) > 0:
+                ctx = ssl.create_default_context(cafile=tmp.name)
+                os.unlink(tmp.name)
+                return ctx
+            os.unlink(tmp.name)
+        except Exception:
+            pass
+
+    try:
+        ctx = ssl.create_default_context()
+        ctx.load_default_certs()
+        return ctx
+    except Exception:
+        pass
+
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    return ctx
 
 GITHUB_API_URL = "https://api.github.com/repos/CompuMaxx/gba-background-studio/releases/latest"
 RELEASES_URL   = "https://github.com/CompuMaxx/gba-background-studio/releases"
 REGISTRY_KEY   = r"Software\CompuMax\GBABackgroundStudio"
 REGISTRY_VALUE = "InstallPath"
 
-
 class UpdateChecker(QThread):
     result_ready = Signal(dict)
     error        = Signal(str)
+
+    def __init__(self, parent=None, translator=None):
+        super().__init__(parent)
+        self._tr = translator.tr if translator else lambda k, **kw: k
 
     def run(self):
         try:
@@ -29,7 +82,8 @@ class UpdateChecker(QThread):
                 GITHUB_API_URL,
                 headers={"User-Agent": "GBABackgroundStudio-UpdateChecker"}
             )
-            with urllib.request.urlopen(req, timeout=10) as resp:
+            ctx = _make_ssl_context()
+            with urllib.request.urlopen(req, timeout=10, context=ctx) as resp:
                 data = json.loads(resp.read().decode())
             self.result_ready.emit({
                 "tag":  data.get("tag_name", ""),
@@ -37,10 +91,15 @@ class UpdateChecker(QThread):
                 "assets": data.get("assets", [])
             })
         except urllib.error.URLError as e:
-            self.error.emit(str(e.reason))
+            reason = str(e.reason)
+            if "CERTIFICATE_VERIFY_FAILED" in reason or "SSL" in reason.upper():
+                self.error.emit(
+                    self._tr("update_ssl_error", error=reason)
+                )
+            else:
+                self.error.emit(reason)
         except Exception as e:
             self.error.emit(str(e))
-
 
 class UpdateDownloader(QThread):
     finished = Signal(str)
@@ -53,11 +112,16 @@ class UpdateDownloader(QThread):
     def run(self):
         try:
             dest = tempfile.gettempdir() + "\\GBABackgroundStudio_Updater.exe"
-            urllib.request.urlretrieve(self._url, dest)
+            ctx = _make_ssl_context()
+            opener = urllib.request.build_opener(
+                urllib.request.HTTPSHandler(context=ctx)
+            )
+            with opener.open(self._url, timeout=60) as resp:
+                with open(dest, 'wb') as f:
+                    f.write(resp.read())
             self.finished.emit(dest)
         except Exception as e:
             self.error.emit(str(e))
-
 
 class AboutDialog(QDialog):
 
@@ -106,7 +170,7 @@ class AboutDialog(QDialog):
     def _on_check_updates(self):
         self._check_btn.setEnabled(False)
         self._set_status(self._tr("checking_updates"), "gray")
-        self._checker = UpdateChecker(self)
+        self._checker = UpdateChecker(self, translator=self._mw.translator)
         self._checker.result_ready.connect(self._on_check_result)
         self._checker.error.connect(self._on_check_error)
         self._checker.start()
@@ -186,7 +250,6 @@ class AboutDialog(QDialog):
                             self._tr("update_error_msg", error=msg))
 
     def _get_install_path(self):
-        """Return InstallPath from Windows registry, or None."""
         try:
             import winreg
             with winreg.OpenKey(winreg.HKEY_CURRENT_USER, REGISTRY_KEY) as key:

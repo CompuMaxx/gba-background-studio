@@ -1,4 +1,4 @@
-<p align="center"><img width="1868" height="560" src="assets/readme/banner.png" alt="Image" /></p>
+<p align="center"><img width="1868" height="560" src="../assets/readme/banner.png" alt="Image" /></p>
 <div align="center"><a href="https://discord.gg/wsFFExCWFu"><img src="https://img.shields.io/discord/1073012182264066099" alt="Discord"></a></div>
 
 ## GBA Background Studio
@@ -14,7 +14,7 @@
 이 README는 다음 언어로 제공됩니다:
 
 <p align="center">
-  <a href="README.md">English</a> | <a href="README.spa.md">Español</a> | <a href="README.brp.md">Português (BR)</a> | <a href="README.fra.md">Français</a> | <a href="README.deu.md">Deutsch</a> | <a href="README.ita.md">Italiano</a> | <a href="README.por.md">Português</a> | <a href="README.nld.md">Nederlands</a> | <a href="README.pol.md">Polski</a><br>
+  <a href="../README.md">English</a> | <a href="README.spa.md">Español</a> | <a href="README.brp.md">Português (BR)</a> | <a href="README.fra.md">Français</a> | <a href="README.deu.md">Deutsch</a> | <a href="README.ita.md">Italiano</a> | <a href="README.por.md">Português</a> | <a href="README.nld.md">Nederlands</a> | <a href="README.pol.md">Polski</a><br>
   <a href="README.tur.md">Türkçe</a> | <a href="README.vie.md">Tiếng Việt</a> | <a href="README.ind.md">Bahasa Indonesia</a> | <a href="README.hin.md">हिन्दी</a> | <a href="README.rus.md">Русский</a> | <a href="README.jpn.md">日本語</a> | <a href="README.zhs.md">简体中文</a> | <a href="README.zht.md">繁體中文</a> | <a href="README.kor.md">한국어</a>
 </p>
 
@@ -57,19 +57,19 @@
 
 ## 🖼️ 스크린샷
 
-<p align="center"><img width="896" height="590" src="assets/readme/kor_conversion_interfaz.png" alt="Image" /></p>
+<p align="center"><img width="896" height="590" src="../assets/readme/kor_conversion_interfaz.png" alt="Image" /></p>
 
-<p align="center"><img width="793" height="676" src="assets/readme/kor_preview.png" alt="Image" /></p>
+<p align="center"><img width="793" height="676" src="../assets/readme/kor_preview.png" alt="Image" /></p>
 
-<p align="center"><img width="793" height="676" src="assets/readme/kor_edit_tiles.png" alt="Image" /></p>
+<p align="center"><img width="793" height="676" src="../assets/readme/kor_edit_tiles.png" alt="Image" /></p>
 
-<p align="center"><img width="793" height="676" src="assets/readme/kor_edit_palettes.png" alt="Image" /></p>
+<p align="center"><img width="793" height="676" src="../assets/readme/kor_edit_palettes.png" alt="Image" /></p>
 
 ---
 
 ## 🏗️ 아키텍처 설명
 
-GBA Background Studio는 **Python**과 **PySide6**로 구축되었으며, 모듈식 인터페이스 디자인을 따릅니다:
+GBA Background Studio는 **Python**과 **PySide6 / PySide2** (하이브리드)로 구축되었으며, 모듈식 인터페이스 디자인을 따릅니다:
 
 - **메인 윈도우 (`GBABackgroundStudio`)**
   - 애플리케이션 상태(현재 BPP, 줌 레벨, 타일 및 팔레트 선택)를 관리합니다.
@@ -93,38 +93,54 @@ GBA Background Studio는 **Python**과 **PySide6**로 구축되었으며, 모듈
 
 ## 📦 설치
 
-### 요구 사항
-- **Python** (3.12 이상 권장)
-- **Pip** (Python 패키지 관리자)
-- **PySide6 OS 지원:**
-  - **Windows:** Windows 10 (버전 1809) 이상.
-  - **macOS:** macOS 11 (Big Sur) 이상.
-  - **Linux:** glibc 2.28 이상을 사용하는 최신 배포판.
+### 옵션 1 — 설치 프로그램 (권장)
 
-### 종속성
-주요 종속성은 다음과 같습니다:
-- `PySide6` (Qt for Python) - *참고: 위에서 언급한 OS 버전이 필요합니다.*
-- `Pillow` (PIL) 이미지 처리용.
+[GitHub Releases](https://github.com/CompuMaxx/gba-background-studio/releases)에서 최신 버전을 다운로드하세요:
 
-다음 명령을 사용하여 종속성을 설치할 수 있습니다:
+| 설치 프로그램 | Python | 운영 체제 |
+|---|---|---|
+| `GBABackgroundStudio_Setup.exe` | 내장 (별도 설치 불필요) | Windows 10 / 11 |
+| `GBABackgroundStudio_Legacy_Setup.exe` | 내장 (별도 설치 불필요) | Windows 7 / 8 / 8.1 |
+
+설치 프로그램을 실행하고 앱을 시작하기만 하면 됩니다 — Python이나 pip가 필요 없습니다.
+
+---
+
+### 옵션 2 — 소스에서 실행
+
+#### 요구 사항
+
+| 환경 | Python | Qt 백엔드 | 운영 체제 |
+|---|---|---|---|
+| **최신** | 3.10+ | PySide6 (자동) | Windows 10/11, macOS 11+, Linux |
+| **레거시** | 3.8 / 3.9 | PySide2 5.15.2 (자동) | Windows 7 / 8 / 8.1 |
+
+애플리케이션은 Python 버전에 따라 사용할 Qt 백엔드를 자동으로 감지합니다 — 수동 설정이 필요 없습니다.
+
+#### 종속성
+
 ```bash
 pip install -r requirements.txt
 ```
 
+`requirements.txt`는 올바른 Qt 백엔드를 자동으로 설치합니다:
+- **Python ≥ 3.10** → `PySide6`
+- **Python 3.8 / 3.9** → `PySide2 5.15.2`
+
+기타 종속성: `Pillow`, `numpy`, `scipy`, `scikit-learn`, `opencv-python`, `certifi`.
+
 ---
 
-### 🏛️ 레거시 OS 지원 (Windows 7 / 8 / 8.1)
-**PySide6**(GUI 프레임워크)를 지원하지 않는 이전 버전의 Windows를 사용하는 경우에도 **다국어 명령줄 마법사**를 통해 핵심 변환 엔진을 사용할 수 있습니다.
+### 🏛️ 레거시 시스템 지원 (Windows 7 / 8 / 8.1)
 
-#### 요구 사항
-- **Python** (3.8 이상 권장)
+전체 그래픽 인터페이스는 Windows 7 이상에서 실행됩니다. **Python 3.8**을 사용하면 `requirements.txt`가 자동으로 **PySide2 5.15.2**를 설치합니다.
 
-이를 통해 그래픽 인터페이스 없이 모국어별 단계별 안내에 따라 이미지를 GBA 리소스로 변환할 수 있습니다.
+또한 **다국어 명령줄 마법사** (`GBA_Studio_Wizard.bat`)는 GUI 없이 일괄 변환에 사용할 수 있으며, Python 3.8+이 설치된 모든 Windows 버전에서 작동합니다:
 
 1. 프로젝트 루트 디렉토리로 이동합니다.
-2. **`GBA_Studio_Wizard.bat`** 파일을 실행합니다.
+2. **`GBA_Studio_Wizard.bat`**를 실행합니다.
 3. 언어를 선택합니다 (18개 언어 지원).
-4. 지침에 따라 이미지를 드래그 앤 드롭하고 GBA 출력을 설정합니다.
+4. 단계별 지침에 따라 이미지를 변환합니다.
 
 ---
 

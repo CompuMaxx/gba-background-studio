@@ -1,13 +1,25 @@
 # ui/preview_tab.py
-from PySide6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QSplitter,
-                               QGraphicsView, QGraphicsScene, QHBoxLayout,
-                               QPushButton, QSizePolicy)
-from PySide6.QtGui import QFont, QPainter
-from PySide6.QtCore import Qt
+
 from core.palette_utils import generate_grayscale_palette
 import os
 import subprocess
-
+from ui.qt_compat import (
+    QWidget,
+    QVBoxLayout,
+    QLabel,
+    QSplitter,
+    QGraphicsView,
+    QGraphicsScene,
+    QHBoxLayout,
+    QPushButton,
+    QSizePolicy,
+    QFont,
+    QPainter,
+    Qt,
+    QColor,
+    QBrush,
+    QPen
+)
 
 class PreviewTab(QWidget):
     @property
@@ -142,7 +154,7 @@ class PreviewTab(QWidget):
                 
             row = i // 16
             col = i % 16
-            from PySide6.QtGui import QColor, QBrush, QPen
+
             color = QColor(r, g, b)
             brush = QBrush(color)
             
@@ -186,7 +198,7 @@ class PreviewTab(QWidget):
 
             row = i // 16
             col = i % 16
-            from PySide6.QtGui import QColor, QBrush, QPen
+
             color = QColor(r, g, b)
             brush = QBrush(color)
             

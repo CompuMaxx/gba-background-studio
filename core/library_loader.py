@@ -5,14 +5,15 @@ import os
 from types import ModuleType
 from typing import Dict, List, Tuple
 from utils.translator import Translator
+from ui.qt_compat import QFileDialog
 translator = Translator()
 
 class LibraryLoader:
     def __init__(self):
         self.libraries_to_preload = [
-            "PySide6.QtCore",
-            "PySide6.QtGui", 
-            "PySide6.QtWidgets",
+            "PySide2.QtCore",
+            "PySide2.QtGui", 
+            "PySide2.QtWidgets",
             "PIL.Image",
             "PIL.ImageOps",
             "numpy",
@@ -42,8 +43,8 @@ class LibraryLoader:
                     dummy_img = Image.new('P', (8, 8))
                     _ = dummy_img.getpalette()
 
-                elif module_name == "PySide6.QtWidgets":
-                    from PySide6.QtWidgets import QFileDialog
+                elif module_name == "PySide2.QtWidgets":
+
                     _ = QFileDialog
 
                 time.sleep(0.02)

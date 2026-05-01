@@ -72,6 +72,9 @@ def quantize_to_n_colors_4bpp(groups_dir, selected_palettes=None, transparent_co
             n_clusters = min(max_possible_clusters, len(cluster_pixels))
 
             if n_clusters > 0:
+                import warnings
+                from sklearn.exceptions import ConvergenceWarning
+                
                 if len(cluster_pixels) > 5000:
                     np.random.seed(42)
                     
@@ -79,14 +82,18 @@ def quantize_to_n_colors_4bpp(groups_dir, selected_palettes=None, transparent_co
                     indices = np.random.choice(len(cluster_pixels), sample_size, replace=False)
                     sample_pixels = cluster_pixels[indices]
                     
-                    kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10, max_iter=30, tol=1e-5)
-                    kmeans.fit(sample_pixels)
+                    with warnings.catch_warnings():
+                        warnings.filterwarnings("ignore", category=ConvergenceWarning)
+                        kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10, max_iter=30, tol=1e-5)
+                        kmeans.fit(sample_pixels)
                     
                     labels = kmeans.predict(cluster_pixels)
                     cluster_centers = kmeans.cluster_centers_.round().astype(int)
                 else:
-                    kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10, max_iter=30, tol=1e-5)
-                    labels = kmeans.fit_predict(cluster_pixels)
+                    with warnings.catch_warnings():
+                        warnings.filterwarnings("ignore", category=ConvergenceWarning)
+                        kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10, max_iter=30, tol=1e-5)
+                        labels = kmeans.fit_predict(cluster_pixels)
                     cluster_centers = kmeans.cluster_centers_.round().astype(int)
                 
                 initial_palette = [final_color_0]
@@ -178,18 +185,20 @@ def quantize_to_n_colors_4bpp(groups_dir, selected_palettes=None, transparent_co
             new_img.putpalette(flat_palette)
 
             old_to_new = {}
-            for new_idx, color in enumerate(reordered_rgb):
-                best_old_idx = 0
+            for old_idx in range(16):
+                old_color = rgb_palette[old_idx]
+                best_new_idx = 0
                 best_dist = float('inf')
-                for old_idx in range(16):
-                    dr = rgb_palette[old_idx][0] - color[0]
-                    dg = rgb_palette[old_idx][1] - color[1]
-                    db = rgb_palette[old_idx][2] - color[2]
+                for new_idx in range(16):
+                    new_color = reordered_rgb[new_idx]
+                    dr = old_color[0] - new_color[0]
+                    dg = old_color[1] - new_color[1]
+                    db = old_color[2] - new_color[2]
                     dist = dr*dr + dg*dg + db*db
                     if dist < best_dist:
                         best_dist = dist
-                        best_old_idx = old_idx
-                old_to_new[best_old_idx] = new_idx
+                        best_new_idx = new_idx
+                old_to_new[old_idx] = best_new_idx
 
             img_flat = img_data.flatten()
             new_flat = np.array([old_to_new.get(idx, 0) for idx in img_flat])
@@ -250,6 +259,9 @@ def quantize_to_n_colors_8bpp(img, n_colors, start_index=0, transparent_color=(0
     if n_clusters <= 0:
         n_clusters = 1
 
+    import warnings
+    from sklearn.exceptions import ConvergenceWarning
+
     if len(cluster_pixels) > 5000:
         np.random.seed(42)
         
@@ -257,14 +269,18 @@ def quantize_to_n_colors_8bpp(img, n_colors, start_index=0, transparent_color=(0
         indices = np.random.choice(len(cluster_pixels), sample_size, replace=False)
         sample_pixels = cluster_pixels[indices]
         
-        kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10, max_iter=30, tol=1e-5)
-        kmeans.fit(sample_pixels)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=ConvergenceWarning)
+            kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10, max_iter=30, tol=1e-5)
+            kmeans.fit(sample_pixels)
         
         labels = kmeans.predict(cluster_pixels)
         cluster_centers = kmeans.cluster_centers_.round(0).astype(int)
     else:
-        kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10, max_iter=30, tol=1e-5)
-        labels = kmeans.fit_predict(cluster_pixels)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=ConvergenceWarning)
+            kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10, max_iter=30, tol=1e-5)
+            labels = kmeans.fit_predict(cluster_pixels)
         cluster_centers = kmeans.cluster_centers_.round(0).astype(int)
 
     reduced_palette = []

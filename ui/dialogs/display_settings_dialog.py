@@ -1,13 +1,18 @@
 # ui/dialogs/display_settings_dialog.py
-from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QLabel, QSlider,
-    QPushButton, QDialogButtonBox, QFrame
+
+from ui.qt_compat import (
+    QDialog,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QSlider,
+    QPushButton,
+    QDialogButtonBox,
+    QFrame,
+    QColor,
+    Qt,
+    QColorDialog
 )
-from PySide6.QtGui import QColor
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QColorDialog
-
-
 class ColorButton(QPushButton):
     def __init__(self, color: QColor, parent=None):
         super().__init__(parent)
@@ -23,13 +28,11 @@ class ColorButton(QPushButton):
     def color(self) -> QColor:
         return self._color
 
-
 def _make_separator():
     line = QFrame()
     line.setFrameShape(QFrame.HLine)
     line.setFrameShadow(QFrame.Sunken)
     return line
-
 
 def _parse_color(value: str) -> QColor:
     try:
@@ -37,7 +40,6 @@ def _parse_color(value: str) -> QColor:
         return QColor(r, g, b)
     except Exception:
         return QColor(0, 0, 0)
-
 
 class DisplaySettingsDialog(QDialog):
     def __init__(self, main_window, parent=None):

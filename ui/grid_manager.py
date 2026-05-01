@@ -1,9 +1,12 @@
 # ui/grid_manager.py
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QPen, QColor, QPainter
-from PySide6.QtWidgets import QGraphicsLineItem
 
-
+from ui.qt_compat import (
+    Qt,
+    QPen,
+    QColor,
+    QPainter,
+    QGraphicsLineItem
+)
 class GridManager:
     def __init__(self):
         self._grid_visible = False

@@ -1,4 +1,4 @@
-<p align="center"><img width="1868" height="560" src="assets/readme/banner.png" alt="Image" /></p>
+<p align="center"><img width="1868" height="560" src="../assets/readme/banner.png" alt="Image" /></p>
 <div align="center"><a href="https://discord.gg/wsFFExCWFu"><img src="https://img.shields.io/discord/1073012182264066099" alt="Discord"></a></div>
 
 ## GBA Background Studio
@@ -14,7 +14,7 @@
 Deze README is beschikbaar in de volgende talen:
 
 <p align="center">
-  <a href="README.md">English</a> | <a href="README.spa.md">Español</a> | <a href="README.brp.md">Português (BR)</a> | <a href="README.fra.md">Français</a> | <a href="README.deu.md">Deutsch</a> | <a href="README.ita.md">Italiano</a> | <a href="README.por.md">Português</a> | <a href="README.nld.md">Nederlands</a> | <a href="README.pol.md">Polski</a><br>
+  <a href="../README.md">English</a> | <a href="README.spa.md">Español</a> | <a href="README.brp.md">Português (BR)</a> | <a href="README.fra.md">Français</a> | <a href="README.deu.md">Deutsch</a> | <a href="README.ita.md">Italiano</a> | <a href="README.por.md">Português</a> | <a href="README.nld.md">Nederlands</a> | <a href="README.pol.md">Polski</a><br>
   <a href="README.tur.md">Türkçe</a> | <a href="README.vie.md">Tiếng Việt</a> | <a href="README.ind.md">Bahasa Indonesia</a> | <a href="README.hin.md">हिन्दी</a> | <a href="README.rus.md">Русский</a> | <a href="README.jpn.md">日本語</a> | <a href="README.zhs.md">简体中文</a> | <a href="README.zht.md">繁體中文</a> | <a href="README.kor.md">한국어</a>
 </p>
 
@@ -57,19 +57,19 @@ Deze README is beschikbaar in de volgende talen:
 
 ## 🖼️ Schermafbeeldingen
 
-<p align="center"><img width="896" height="590" src="assets/readme/nld_conversion_interfaz.png" alt="Image" /></p>
+<p align="center"><img width="896" height="590" src="../assets/readme/nld_conversion_interfaz.png" alt="Image" /></p>
 
-<p align="center"><img width="966" height="676" src="assets/readme/nld_preview.png" alt="Image" /></p>
+<p align="center"><img width="966" height="676" src="../assets/readme/nld_preview.png" alt="Image" /></p>
 
-<p align="center"><img width="966" height="676" src="assets/readme/nld_edit_tiles.png" alt="Image" /></p>
+<p align="center"><img width="966" height="676" src="../assets/readme/nld_edit_tiles.png" alt="Image" /></p>
 
-<p align="center"><img width="966" height="676" src="assets/readme/nld_edit_palettes.png" alt="Image" /></p>
+<p align="center"><img width="966" height="676" src="../assets/readme/nld_edit_palettes.png" alt="Image" /></p>
 
 ---
 
 ## 🏗️ Architectuurbeschrijving
 
-GBA Background Studio is gebouwd met **Python** en **PySide6**, en volgt een modulair interfaceontwerp:
+GBA Background Studio is gebouwd met **Python** en **PySide6 / PySide2** (hybride), en volgt een modulair interfaceontwerp:
 
 - **Hoofdvenster (`GBABackgroundStudio`)**
   - Beheert de applicatiestatus (huidig BPP, zoomniveau, tegel- en paletselectie).
@@ -93,38 +93,54 @@ GBA Background Studio is gebouwd met **Python** en **PySide6**, en volgt een mod
 
 ## 📦 Installatie
 
-### Vereisten
-- **Python** (3.12+ aanbevolen)
-- **Pip** (Python pakketbeheerder)
-- **Besturingssysteem ondersteuning voor PySide6:**
-  - **Windows:** Windows 10 (Versie 1809) of nieuwer.
-  - **macOS:** macOS 11 (Big Sur) of nieuwer.
-  - **Linux:** Moderne distributies met glibc 2.28 of nieuwer.
+### Optie 1 — Installer (aanbevolen)
 
-### Afhankelijkheden
-De belangrijkste afhankelijkheden zijn:
-- `PySide6` (Qt voor Python) - *Let op: Vereist de hierboven genoemde OS-versies.*
-- `Pillow` (PIL) voor beeldbewerking.
+Download de nieuwste versie van [GitHub Releases](https://github.com/CompuMaxx/gba-background-studio/releases):
 
-U kunt de afhankelijkheden installeren met:
+| Installer | Python | OS |
+|---|---|---|
+| `GBABackgroundStudio_Setup.exe` | Inbegrepen (geen installatie nodig) | Windows 10 / 11 |
+| `GBABackgroundStudio_Legacy_Setup.exe` | Inbegrepen (geen installatie nodig) | Windows 7 / 8 / 8.1 |
+
+Voer gewoon de installer uit en start de app — geen Python of pip vereist.
+
+---
+
+### Optie 2 — Uitvoeren vanuit broncode
+
+#### Vereisten
+
+| Omgeving | Python | Qt-backend | OS |
+|---|---|---|---|
+| **Modern** | 3.10+ | PySide6 (auto) | Windows 10/11, macOS 11+, Linux |
+| **Legacy** | 3.8 / 3.9 | PySide2 5.15.2 (auto) | Windows 7 / 8 / 8.1 |
+
+De applicatie detecteert automatisch welke Qt-backend gebruikt moet worden op basis van uw Python-versie — geen handmatige configuratie nodig.
+
+#### Afhankelijkheden
+
 ```bash
 pip install -r requirements.txt
 ```
 
+`requirements.txt` installeert automatisch de juiste Qt-backend:
+- **Python ≥ 3.10** → `PySide6`
+- **Python 3.8 / 3.9** → `PySide2 5.15.2`
+
+Overige afhankelijkheden: `Pillow`, `numpy`, `scipy`, `scikit-learn`, `opencv-python`, `certifi`.
+
 ---
 
-### 🏛️ Ondersteuning voor Legacy OS (Windows 7 / 8 / 8.1)
-Als u een oudere versie van Windows gebruikt die **PySide6** (het GUI-framework) niet ondersteunt, kunt u nog steeds de conversie-engine gebruiken via onze **Meertalige Command Line Wizard**.
+### 🏛️ Ondersteuning voor Legacy Systemen (Windows 7 / 8 / 8.1)
 
-#### Vereisten
-- **Python** (3.8+ aanbevolen)
+De volledige grafische interface werkt op Windows 7 en later. Gebruik **Python 3.8** en `requirements.txt` installeert automatisch **PySide2 5.15.2**.
 
-Hiermee kunt u afbeeldingen converteren naar GBA-assets zonder de grafische interface, met behulp van een stapsgewijze assistent in uw eigen taal.
+Alternatief is de **Meertalige Opdrachtregelassistent** (`GBA_Studio_Wizard.bat`) beschikbaar voor batchconversies zonder de grafische interface, en werkt op elke Windows-versie met Python 3.8+:
 
-1. Ga naar de hoofdmap van het project.
-2. Voer het bestand **`GBA_Studio_Wizard.bat`** uit.
+1. Navigeer naar de hoofdmap van het project.
+2. Voer **`GBA_Studio_Wizard.bat`** uit.
 3. Selecteer uw taal (18 talen ondersteund).
-4. Volg de instructies om uw afbeelding te slepen en de GBA-output te configureren.
+4. Volg de stapsgewijze instructies om uw afbeelding te converteren.
 
 ---
 

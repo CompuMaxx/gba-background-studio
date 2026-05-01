@@ -1,7 +1,8 @@
 # ui/history_manager.py
-from PySide6.QtCore import QObject, Signal
+
 from collections import deque
 import copy
+from ui.qt_compat import QObject, Signal
 
 class HistoryManager(QObject):
     history_changed = Signal()

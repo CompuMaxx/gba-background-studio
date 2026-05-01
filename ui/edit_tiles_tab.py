@@ -1,12 +1,5 @@
 # ui/edit_tiles_tab.py
 import os
-from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QSplitter, QGraphicsPixmapItem,
-    QGraphicsView, QGraphicsScene, QGraphicsRectItem, QHBoxLayout,
-    QSpinBox, QPushButton, QCheckBox, QFrame, QGridLayout, QSizePolicy
-)
-from PySide6.QtGui import QFont, QPainter, QPixmap, QPen, QColor
-from PySide6.QtCore import Qt
 
 from PIL import Image as PilImage
 from core.final_assets import revert_gba_tilemap_reorganization
@@ -14,6 +7,29 @@ from core.image_utils import create_gbagfx_preview
 from ui.shared_utils import CustomGraphicsView, update_status_bar_shared, pil_to_qimage
 from ui.shared_utils import CustomGraphicsView, update_status_bar_shared
 from ui.tilemap_utils import TilemapUtils
+from ui.qt_compat import (
+    QWidget,
+    QVBoxLayout,
+    QLabel,
+    QSplitter,
+    QGraphicsPixmapItem,
+    QGraphicsView,
+    QGraphicsScene,
+    QGraphicsRectItem,
+    QHBoxLayout,
+    QSpinBox,
+    QPushButton,
+    QCheckBox,
+    QFrame,
+    QGridLayout,
+    QSizePolicy,
+    QFont,
+    QPainter,
+    QPixmap,
+    QPen,
+    QColor,
+    Qt
+)
 
 EMPTY_TILE_ENTRY = b'\x00\x00'
 
@@ -113,9 +129,13 @@ class EditTilesTab(TilemapUtils, QWidget):
         self._sync_tilemap_width_to_palettes_tab(tilemap_width)
     
     def _get_min_left_container_width(self):
-        """Get actual minimum width for the tileset container based on content"""
-        if hasattr(self, 'splitter') and self.splitter.sizes():
-            return self.splitter.sizes()[0]
+        """Get true minimum width for the tileset container based on widget hints"""
+        if hasattr(self, 'splitter') and self.splitter.count() > 0:
+            left_widget = self.splitter.widget(0)
+            if left_widget is not None:
+                hint = left_widget.minimumSizeHint()
+                if hint.isValid() and hint.width() > 0:
+                    return hint.width()
         return 200
     
     def _sync_tilemap_width_to_palettes_tab(self, tilemap_width):
@@ -143,7 +163,7 @@ class EditTilesTab(TilemapUtils, QWidget):
         palettes_tab._syncing_splitter = False
     
     def sync_splitter_on_tab_change(self):
-        """Sync splitter sizes when this tab becomes active"""
+        """Sync THIS tab's splitter to match the palettes tab when Edit Tiles becomes active"""
         if not self.main_window or not hasattr(self.main_window, 'edit_palettes_tab'):
             return
             
@@ -151,22 +171,28 @@ class EditTilesTab(TilemapUtils, QWidget):
         if not hasattr(palettes_tab, 'splitter'):
             return
             
-        tiles_sizes = self.splitter.sizes()
         pal_sizes = palettes_tab.splitter.sizes()
+        tiles_sizes = self.splitter.sizes()
         
-        if len(tiles_sizes) != 2 or len(pal_sizes) != 2:
+        if len(pal_sizes) != 2 or len(tiles_sizes) != 2:
             return
             
-        tiles_left_width = tiles_sizes[0]
-        tiles_tilemap_width = tiles_sizes[1]
+        pal_left_width = pal_sizes[0]
+        pal_tilemap_width = pal_sizes[1]
         
-        pal_total_width = sum(pal_sizes)
-        new_pal_tilemap_width = min(tiles_tilemap_width, pal_total_width - tiles_left_width)
-        new_pal_left_width = pal_total_width - new_pal_tilemap_width
+        tiles_total_width = sum(tiles_sizes)
+        tiles_min_left_width = self._get_min_left_container_width()
         
-        palettes_tab._syncing_splitter = True
-        palettes_tab.splitter.setSizes([new_pal_left_width, new_pal_tilemap_width])
-        palettes_tab._syncing_splitter = False
+        new_tiles_left_width = max(pal_left_width, tiles_min_left_width)
+        new_tiles_tilemap_width = tiles_total_width - new_tiles_left_width
+        
+        if new_tiles_tilemap_width < 0:
+            new_tiles_tilemap_width = 0
+            new_tiles_left_width = tiles_total_width
+        
+        self._syncing_splitter = True
+        self.splitter.setSizes([new_tiles_left_width, new_tiles_tilemap_width])
+        self._syncing_splitter = False
 
     def setup_tileset_controls(self, container):
         controls_frame = QFrame()
@@ -323,7 +349,7 @@ class EditTilesTab(TilemapUtils, QWidget):
 
         self.tileset_img = final_img 
         
-        from PySide6.QtGui import QPixmap
+
         from ui.shared_utils import pil_to_qimage 
 
         qimg = pil_to_qimage(final_img)
@@ -343,7 +369,6 @@ class EditTilesTab(TilemapUtils, QWidget):
 
     def setup_tilemap_controls(self, container):
         container.layout().addWidget(self.build_tilemap_toolbar())
-
 
     def retranslate_ui(self):
         self._header_label.setText(self._tr("tab_header_edit_tiles"))
@@ -718,7 +743,7 @@ class EditTilesTab(TilemapUtils, QWidget):
         try:
             from PIL import Image
             from ui.shared_utils import pil_to_qimage
-            from PySide6.QtGui import QPixmap
+
             
             with Image.open(preview_path) as f:
                 preview_img = f.copy()

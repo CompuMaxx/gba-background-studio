@@ -1,4 +1,4 @@
-<p align="center"><img width="1868" height="560" src="assets/readme/banner.png" alt="Image" /></p>
+<p align="center"><img width="1868" height="560" src="../assets/readme/banner.png" alt="Image" /></p>
 <div align="center"><a href="https://discord.gg/wsFFExCWFu"><img src="https://img.shields.io/discord/1073012182264066099" alt="Discord"></a></div>
 
 ## GBA Background Studio
@@ -14,7 +14,7 @@
 Questo README è disponibile nelle seguenti lingue:
 
 <p align="center">
-  <a href="README.md">English</a> | <a href="README.spa.md">Español</a> | <a href="README.brp.md">Português (BR)</a> | <a href="README.fra.md">Français</a> | <a href="README.deu.md">Deutsch</a> | <a href="README.ita.md">Italiano</a> | <a href="README.por.md">Português</a> | <a href="README.nld.md">Nederlands</a> | <a href="README.pol.md">Polski</a><br>
+  <a href="../README.md">English</a> | <a href="README.spa.md">Español</a> | <a href="README.brp.md">Português (BR)</a> | <a href="README.fra.md">Français</a> | <a href="README.deu.md">Deutsch</a> | <a href="README.ita.md">Italiano</a> | <a href="README.por.md">Português</a> | <a href="README.nld.md">Nederlands</a> | <a href="README.pol.md">Polski</a><br>
   <a href="README.tur.md">Türkçe</a> | <a href="README.vie.md">Tiếng Việt</a> | <a href="README.ind.md">Bahasa Indonesia</a> | <a href="README.hin.md">हिन्दी</a> | <a href="README.rus.md">Русский</a> | <a href="README.jpn.md">日本語</a> | <a href="README.zhs.md">简体中文</a> | <a href="README.zht.md">繁體中文</a> | <a href="README.kor.md">한국어</a>
 </p>
 
@@ -57,19 +57,19 @@ Questo README è disponibile nelle seguenti lingue:
 
 ## 🖼️ Screenshot
 
-<p align="center"><img width="896" height="590" src="assets/readme/ita_conversion_interfaz.png" alt="Image" /></p>
+<p align="center"><img width="896" height="590" src="../assets/readme/ita_conversion_interfaz.png" alt="Image" /></p>
 
-<p align="center"><img width="956" height="676" src="assets/readme/ita_preview.png" alt="Image" /></p>
+<p align="center"><img width="956" height="676" src="../assets/readme/ita_preview.png" alt="Image" /></p>
 
-<p align="center"><img width="956" height="676" src="assets/readme/ita_edit_tiles.png" alt="Image" /></p>
+<p align="center"><img width="956" height="676" src="../assets/readme/ita_edit_tiles.png" alt="Image" /></p>
 
-<p align="center"><img width="956" height="676" src="assets/readme/ita_edit_palettes.png" alt="Image" /></p>
+<p align="center"><img width="956" height="676" src="../assets/readme/ita_edit_palettes.png" alt="Image" /></p>
 
 ---
 
 ## 🏗️ Descrizione dell'Architettura
 
-GBA Background Studio è costruito con **Python** e **PySide6**, seguendo un design dell'interfaccia modulare:
+GBA Background Studio è costruito con **Python** e **PySide6 / PySide2** (ibrido), seguendo un design dell'interfaccia modulare:
 
 - **Finestra principale (`GBABackgroundStudio`)**
   - Gestisce lo stato dell'applicazione (BPP corrente, livello di zoom, selezione di quadro e palette).
@@ -93,38 +93,54 @@ GBA Background Studio è costruito con **Python** e **PySide6**, seguendo un des
 
 ## 📦 Installazione
 
-### Requisiti
-- **Python** (3.12+ consigliato)
-- **Pip** (Gestore pacchetti Python)
-- **Sistemi operativi supportati per PySide6:**
-  - **Windows:** Windows 10 (Versione 1809) o successivo.
-  - **macOS:** macOS 11 (Big Sur) o successivo.
-  - **Linux:** Distribuzioni moderne con glibc 2.28 o successivo.
+### Opzione 1 — Installer (consigliato)
 
-### Dipendenze
-Le dipendenze principali includono:
-- `PySide6` (Qt per Python) - *Nota: richiede le versioni del sistema operativo sopra menzionate.*
-- `Pillow` (PIL) per l'elaborazione delle immagini.
+Scarica l'ultima versione da [GitHub Releases](https://github.com/CompuMaxx/gba-background-studio/releases):
 
-Puoi installare le dipendenze usando:
+| Installer | Python | SO |
+|---|---|---|
+| `GBABackgroundStudio_Setup.exe` | Incluso (nessuna installazione richiesta) | Windows 10 / 11 |
+| `GBABackgroundStudio_Legacy_Setup.exe` | Incluso (nessuna installazione richiesta) | Windows 7 / 8 / 8.1 |
+
+Basta eseguire l'installer e avviare l'app — non è necessario Python o pip.
+
+---
+
+### Opzione 2 — Eseguire dal codice sorgente
+
+#### Requisiti
+
+| Ambiente | Python | Backend Qt | SO |
+|---|---|---|---|
+| **Moderno** | 3.10+ | PySide6 (auto) | Windows 10/11, macOS 11+, Linux |
+| **Legacy** | 3.8 / 3.9 | PySide2 5.15.2 (auto) | Windows 7 / 8 / 8.1 |
+
+L'applicazione rileva automaticamente quale backend Qt utilizzare in base alla versione di Python — nessuna configurazione manuale necessaria.
+
+#### Dipendenze
+
 ```bash
 pip install -r requirements.txt
 ```
 
+`requirements.txt` installa automaticamente il backend Qt corretto:
+- **Python ≥ 3.10** → `PySide6`
+- **Python 3.8 / 3.9** → `PySide2 5.15.2`
+
+Altre dipendenze: `Pillow`, `numpy`, `scipy`, `scikit-learn`, `opencv-python`, `certifi`.
+
 ---
 
-### 🏛️ Supporto Sistemi Legacy (Windows 7 / 8 / 8.1)
-Se utilizzi una versione di Windows che non supporta **PySide6** (il framework grafico), puoi comunque utilizzare il motore di conversione tramite il nostro **Assistente multilingue da riga di comando**.
+### 🏛️ Supporto per Sistemi Legacy (Windows 7 / 8 / 8.1)
 
-#### Requisiti
-- **Python** (3.8+ consigliato)
+L'interfaccia grafica completa funziona su Windows 7 e versioni successive. Usa **Python 3.8** e `requirements.txt` installerà automaticamente **PySide2 5.15.2**.
 
-Questo ti permette di convertire immagini in asset GBA senza l'interfaccia grafica, tramite un assistente guidato passo dopo passo nella tua lingua.
+In alternativa, il **Assistente da Riga di Comando Multilingue** (`GBA_Studio_Wizard.bat`) è disponibile per conversioni batch senza l'interfaccia grafica, e funziona su qualsiasi versione di Windows con Python 3.8+:
 
-1. Vai alla cartella principale del progetto.
-2. Esegui il file **`GBA_Studio_Wizard.bat`**.
+1. Naviga alla radice del progetto.
+2. Esegui **`GBA_Studio_Wizard.bat`**.
 3. Seleziona la tua lingua (18 lingue supportate).
-4. Segui le istruzioni per trascinare l'immagine e configurare l'output GBA.
+4. Segui le istruzioni passo dopo passo per convertire la tua immagine.
 
 ---
 

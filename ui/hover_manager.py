@@ -1,10 +1,13 @@
 # ui/hover_manager.py
 
-from PySide6.QtWidgets import QWidget
-from PySide6.QtGui import QPainter, QPen, QColor, QCursor
-from PySide6.QtCore import Qt
-
-
+from ui.qt_compat import (
+    QWidget,
+    QPainter,
+    QPen,
+    QColor,
+    QCursor,
+    Qt
+)
 class HoverManager:
     def __init__(self):
         self._overlays = {}

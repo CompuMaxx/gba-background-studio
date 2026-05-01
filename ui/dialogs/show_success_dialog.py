@@ -2,9 +2,16 @@
 import os
 import sys
 import subprocess
-from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QListWidget, QPushButton, QHBoxLayout
-from PySide6.QtCore import Qt
-
+from ui.qt_compat import (
+    QDialog,
+    QVBoxLayout,
+    QLabel,
+    QListWidget,
+    QPushButton,
+    QHBoxLayout,
+    Qt,
+    exec_dialog,
+)
 
 def show_success_dialog(parent):
     main_window = parent.parent() if parent else None
@@ -57,4 +64,4 @@ def show_success_dialog(parent):
     layout.addLayout(btn_layout)
 
     dialog.setLayout(layout)
-    dialog.exec()
+    exec_dialog(dialog)

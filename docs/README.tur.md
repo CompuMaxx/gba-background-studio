@@ -1,4 +1,4 @@
-<p align="center"><img width="1868" height="560" src="assets/readme/banner.png" alt="Image" /></p>
+<p align="center"><img width="1868" height="560" src="../assets/readme/banner.png" alt="Image" /></p>
 <div align="center"><a href="https://discord.gg/wsFFExCWFu"><img src="https://img.shields.io/discord/1073012182264066099" alt="Discord"></a></div>
 
 ## GBA Background Studio
@@ -14,7 +14,7 @@
 Bu README aşağıdaki dillerde mevcuttur:
 
 <p align="center">
-  <a href="README.md">English</a> | <a href="README.spa.md">Español</a> | <a href="README.brp.md">Português (BR)</a> | <a href="README.fra.md">Français</a> | <a href="README.deu.md">Deutsch</a> | <a href="README.ita.md">Italiano</a> | <a href="README.por.md">Português</a> | <a href="README.nld.md">Nederlands</a> | <a href="README.pol.md">Polski</a><br>
+  <a href="../README.md">English</a> | <a href="README.spa.md">Español</a> | <a href="README.brp.md">Português (BR)</a> | <a href="README.fra.md">Français</a> | <a href="README.deu.md">Deutsch</a> | <a href="README.ita.md">Italiano</a> | <a href="README.por.md">Português</a> | <a href="README.nld.md">Nederlands</a> | <a href="README.pol.md">Polski</a><br>
   <a href="README.tur.md">Türkçe</a> | <a href="README.vie.md">Tiếng Việt</a> | <a href="README.ind.md">Bahasa Indonesia</a> | <a href="README.hin.md">हिन्दी</a> | <a href="README.rus.md">Русский</a> | <a href="README.jpn.md">日本語</a> | <a href="README.zhs.md">简体中文</a> | <a href="README.zht.md">繁體中文</a> | <a href="README.kor.md">한국어</a>
 </p>
 
@@ -57,19 +57,19 @@ Bu README aşağıdaki dillerde mevcuttur:
 
 ## 🖼️ Ekran Görüntüleri
 
-<p align="center"><img width="896" height="590" src="assets/readme/tur_conversion_interfaz.png" alt="Image" /></p>
+<p align="center"><img width="896" height="590" src="../assets/readme/tur_conversion_interfaz.png" alt="Image" /></p>
 
-<p align="center"><img width="939" height="676" src="assets/readme/tur_preview.png" alt="Image" /></p>
+<p align="center"><img width="939" height="676" src="../assets/readme/tur_preview.png" alt="Image" /></p>
 
-<p align="center"><img width="939" height="676" src="assets/readme/tur_edit_tiles.png" alt="Image" /></p>
+<p align="center"><img width="939" height="676" src="../assets/readme/tur_edit_tiles.png" alt="Image" /></p>
 
-<p align="center"><img width="939" height="676" src="assets/readme/tur_edit_palettes.png" alt="Image" /></p>
+<p align="center"><img width="939" height="676" src="../assets/readme/tur_edit_palettes.png" alt="Image" /></p>
 
 ---
 
 ## 🏗️ Mimari Açıklama
 
-GBA Background Studio, **Python** ve **PySide6** ile oluşturulmuş olup modüler bir arayüz tasarımı izler:
+GBA Background Studio, **Python** ve **PySide6 / PySide2** (hibrit) ile oluşturulmuş olup modüler bir arayüz tasarımı izler:
 
 - **Ana Pencere (`GBABackgroundStudio`)**
   - Uygulama durumunu yönetir (mevcut BPP, yakınlaştırma seviyesi, karo ve palet seçimi).
@@ -93,38 +93,54 @@ GBA Background Studio, **Python** ve **PySide6** ile oluşturulmuş olup modüle
 
 ## 📦 Kurulum
 
-### Gereksinimler
-- **Python** (3.12+ önerilir)
-- **Pip** (Python paket yöneticisi)
-- **PySide6 için İşletim Sistemi Desteği:**
-  - **Windows:** Windows 10 (Sürüm 1809) veya üzeri.
-  - **macOS:** macOS 11 (Big Sur) veya üzeri.
-  - **Linux:** glibc 2.28 veya üzeri modern dağıtımlar.
+### Seçenek 1 — Yükleyici (önerilir)
 
-### Bağımlılıklar
-Temel bağımlılıklar şunları içerir:
-- `PySide6` (Qt for Python) - *Not: Yukarıda belirtilen işletim sistemi sürümlerini gerektirir.*
-- `Pillow` (PIL) görüntü işleme için.
+En son sürümü [GitHub Releases](https://github.com/CompuMaxx/gba-background-studio/releases) adresinden indirin:
 
-Bağımlılıkları şu komutla yükleyebilirsiniz:
+| Yükleyici | Python | İşletim Sistemi |
+|---|---|---|
+| `GBABackgroundStudio_Setup.exe` | Dahili (kurulum gerekmez) | Windows 10 / 11 |
+| `GBABackgroundStudio_Legacy_Setup.exe` | Dahili (kurulum gerekmez) | Windows 7 / 8 / 8.1 |
+
+Yükleyiciyi çalıştırın ve uygulamayı başlatın — Python veya pip gerekmez.
+
+---
+
+### Seçenek 2 — Kaynaktan çalıştırma
+
+#### Gereksinimler
+
+| Ortam | Python | Qt Backend | İşletim Sistemi |
+|---|---|---|---|
+| **Modern** | 3.10+ | PySide6 (otomatik) | Windows 10/11, macOS 11+, Linux |
+| **Legacy** | 3.8 / 3.9 | PySide2 5.15.2 (otomatik) | Windows 7 / 8 / 8.1 |
+
+Uygulama, Python sürümünüze göre hangi Qt backend'ini kullanacağını otomatik olarak algılar — manuel yapılandırma gerekmez.
+
+#### Bağımlılıklar
+
 ```bash
 pip install -r requirements.txt
 ```
 
+`requirements.txt` doğru Qt backend'ini otomatik olarak yükler:
+- **Python ≥ 3.10** → `PySide6`
+- **Python 3.8 / 3.9** → `PySide2 5.15.2`
+
+Diğer bağımlılıklar: `Pillow`, `numpy`, `scipy`, `scikit-learn`, `opencv-python`, `certifi`.
+
 ---
 
-### 🏛️ Eski İşletim Sistemi Desteği (Windows 7 / 8 / 8.1)
-**PySide6**'yı (grafik arayüz çerçevesi) desteklemeyen eski bir Windows sürümü kullanıyorsanız, temel dönüştürme motorunu **Çok Dilli Komut Satırı Sihirbazımız** aracılığıyla kullanmaya devam edebilirsiniz.
+### 🏛️ Legacy Sistemler için Destek (Windows 7 / 8 / 8.1)
 
-#### Gereksinimler
-- **Python** (3.8+ önerilir)
+Tam grafik arayüzü Windows 7 ve sonrasında çalışır. **Python 3.8** kullanın; `requirements.txt` otomatik olarak **PySide2 5.15.2** yükleyecektir.
 
-Bu, grafik arayüz olmadan, ana dilinizde adım adım rehberli bir asistan kullanarak görüntüleri GBA varlıklarına dönüştürmenize olanak tanır.
+Alternatif olarak, **Çok Dilli Komut Satırı Sihirbazı** (`GBA_Studio_Wizard.bat`) grafik arayüzü olmadan toplu dönüştürmeler için kullanılabilir ve Python 3.8+ ile herhangi bir Windows sürümünde çalışır:
 
-1. Proje kök dizinine gidin.
+1. Projenin kök dizinine gidin.
 2. **`GBA_Studio_Wizard.bat`** dosyasını çalıştırın.
 3. Dilinizi seçin (18 dil desteklenmektedir).
-4. Görüntünüzü sürükleyip bırakmak ve GBA çıktısını yapılandırmak için talimatları izleyin.
+4. Görüntünüzü dönüştürmek için adım adım talimatları izleyin.
 
 ---
 

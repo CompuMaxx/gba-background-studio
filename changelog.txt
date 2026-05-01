@@ -1,11 +1,35 @@
-Version: 1.1.0
-Date: April 1st, 2026
+Version: 2.0.0
+Date: May 1st, 2026
 
 Official Discord Server: https://discord.gg/wsFFExCWFu
 
 Please report any issues on GitHub: [https://github.com/CompuMaxx/gba-background-studio/issues](https://github.com/CompuMaxx/gba-background-studio/issues)
 
 ---
+
+## [2.0.0] - 2026-05-01
+
+### Added
+- Hybrid PySide6/PySide2 support via `ui/qt_compat.py`: the application now automatically selects the appropriate Qt backend based on the Python version (PySide6 on Python 3.10+, PySide2 5.15.2 on Python 3.8/3.9), enabling compatibility with Windows 7/8/8.1 legacy systems.
+- `requirements.txt` now uses PEP 508 environment markers to install the correct Qt backend automatically (`PySide6` for Python ≥ 3.10, `PySide2==5.15.2` for Python < 3.10).
+- "Save Selection" action is now disabled until an area is selected on the tilemap; the selected area dimensions are shown in the status bar in real time.
+- The conversion dialog preview now updates in real time to reflect the final output dimensions, cropping or padding with transparent tiles as needed.
+
+### Changed
+- Moved all localized README files to the `docs/` folder for a cleaner repository structure.
+
+### Fixed
+- Corrected typo "Save Tilset" → "Save Tileset" in the Tileset menu.
+- "Save Tileset", "Save Tilemap", and "Save Selection" now correctly default to the last used directory (or the Documents folder) instead of the application root directory.
+- Fixed dimension ordering in the Open Tilemap dialog: 32×N sizes now appear before 20×N sizes.
+- Fixed 4bpp conversion errors caused by color replacement when the transparent color matched palette entries; the quantization logic now handles this case correctly.
+- `last_image_directory` is now always updated in memory on every file operation, regardless of the "Remember File Paths" setting, so it is consistently used as the default directory for open/save dialogs within the same session.
+- Fixed "Select Area" toolbar button becoming non-functional after using "Save Selection": the selection overlay was not being redrawn and the complementary toolbar buttons (Mirror, Flip, Swap, Replace, etc.) were not re-enabled.
+- Fixed tilemap being put into drawing mode after confirming "Save Selection" while an area was selected.
+- Export now prompts for confirmation before overwriting existing files.
+- Fixed tilemap scrolling to the top unexpectedly when applying a fill operation while an area was selected.
+- The crop mask (red overlay) is now displayed in real time while resizing the tilemap to indicate which tiles will be removed.
+- Fixed "translator not defined" error when moving the tilemap using the shift buttons.
 
 ## [1.1.0] - 2026-04-01
 

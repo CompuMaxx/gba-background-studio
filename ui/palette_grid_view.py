@@ -1,9 +1,16 @@
 # ui/palette_grid_view.py
-from PySide6.QtWidgets import QGraphicsView, QGraphicsScene, QWidget
-from PySide6.QtGui import QPen, QBrush, QColor, QPainter, QFont
-from PySide6.QtCore import Qt
 
-
+from ui.qt_compat import (
+    QGraphicsView,
+    QGraphicsScene,
+    QWidget,
+    QPen,
+    QBrush,
+    QColor,
+    QPainter,
+    QFont,
+    Qt
+)
 class PaletteGridView(QGraphicsView):
     def __init__(self, parent=None):
         super().__init__(parent)

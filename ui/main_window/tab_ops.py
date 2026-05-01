@@ -3,8 +3,7 @@ import os
 from PIL import Image as PilImage
 from ui.shared_utils import pil_to_qimage
 from core.palette_utils import generate_grayscale_palette
-from PySide6.QtGui import QPixmap
-
+from ui.qt_compat import QPixmap
 
 def on_tab_changed(main_window, index):
     if hasattr(main_window, 'context_toolbar'):
@@ -193,7 +192,6 @@ def load_conversion_results(main_window):
     main_window.menu_bar.action_open_tilemap.setEnabled(True)
     main_window.menu_bar.action_new_tilemap.setEnabled(True)
     main_window.menu_bar.action_save_tilemap.setEnabled(True)
-    main_window.menu_bar.action_save_selection.setEnabled(True)
     main_window.menu_bar.action_save_palette.setEnabled(True)
 
     if hasattr(main_window, 'context_toolbar'):

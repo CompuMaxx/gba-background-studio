@@ -1,6 +1,6 @@
 # ui/dialogs/auto_spinbox.py
-from PySide6.QtWidgets import QSpinBox
 
+from ui.qt_compat import QSpinBox
 class AutoSpinBox(QSpinBox):
     def __init__(self, parent=None):
         super().__init__(parent)

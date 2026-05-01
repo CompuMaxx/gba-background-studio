@@ -1,4 +1,4 @@
-<p align="center"><img width="1868" height="560" src="assets/readme/banner.png" alt="Image" /></p>
+<p align="center"><img width="1868" height="560" src="../assets/readme/banner.png" alt="Image" /></p>
 <div align="center"><a href="https://discord.gg/wsFFExCWFu"><img src="https://img.shields.io/discord/1073012182264066099" alt="Discord"></a></div>
 
 ## GBA Background Studio
@@ -14,7 +14,7 @@
 Diese README ist in folgenden Sprachen verfügbar:
 
 <p align="center">
-  <a href="README.md">English</a> | <a href="README.spa.md">Español</a> | <a href="README.brp.md">Português (BR)</a> | <a href="README.fra.md">Français</a> | <a href="README.deu.md">Deutsch</a> | <a href="README.ita.md">Italiano</a> | <a href="README.por.md">Português</a> | <a href="README.nld.md">Nederlands</a> | <a href="README.pol.md">Polski</a><br>
+  <a href="../README.md">English</a> | <a href="README.spa.md">Español</a> | <a href="README.brp.md">Português (BR)</a> | <a href="README.fra.md">Français</a> | <a href="README.deu.md">Deutsch</a> | <a href="README.ita.md">Italiano</a> | <a href="README.por.md">Português</a> | <a href="README.nld.md">Nederlands</a> | <a href="README.pol.md">Polski</a><br>
   <a href="README.tur.md">Türkçe</a> | <a href="README.vie.md">Tiếng Việt</a> | <a href="README.ind.md">Bahasa Indonesia</a> | <a href="README.hin.md">हिन्दी</a> | <a href="README.rus.md">Русский</a> | <a href="README.jpn.md">日本語</a> | <a href="README.zhs.md">简体中文</a> | <a href="README.zht.md">繁體中文</a> | <a href="README.kor.md">한국어</a>
 </p>
 
@@ -57,19 +57,19 @@ Diese README ist in folgenden Sprachen verfügbar:
 
 ## 🖼️ Screenshots
 
-<p align="center"><img width="896" height="590" src="assets/readme/deu_conversion_interfaz.png" alt="Image" /></p>
+<p align="center"><img width="896" height="590" src="../assets/readme/deu_conversion_interfaz.png" alt="Image" /></p>
 
-<p align="center"><img width="930" height="676" src="assets/readme/deu_preview.png" alt="Image" /></p>
+<p align="center"><img width="930" height="676" src="../assets/readme/deu_preview.png" alt="Image" /></p>
 
-<p align="center"><img width="930" height="676" src="assets/readme/deu_edit_tiles.png" alt="Image" /></p>
+<p align="center"><img width="930" height="676" src="../assets/readme/deu_edit_tiles.png" alt="Image" /></p>
 
-<p align="center"><img width="930" height="676" src="assets/readme/deu_edit_palettes.png" alt="Image" /></p>
+<p align="center"><img width="930" height="676" src="../assets/readme/deu_edit_palettes.png" alt="Image" /></p>
 
 ---
 
 ## 🏗️ Architekturbeschreibung
 
-GBA Background Studio ist mit **Python** und **PySide6** entwickelt und folgt einem modularen Oberflächendesign:
+GBA Background Studio ist mit **Python** und **PySide6 / PySide2** (hybrid) entwickelt und folgt einem modularen Oberflächendesign:
 
 - **Hauptfenster (`GBABackgroundStudio`)**
   - Verwaltet den Anwendungszustand (aktuelles BPP, Zoom-Stufe, Tile- und Palettenauswahl).
@@ -93,38 +93,54 @@ GBA Background Studio ist mit **Python** und **PySide6** entwickelt und folgt ei
 
 ## 📦 Installation
 
-### Anforderungen
-- **Python** (3.12+ empfohlen)
-- **Pip** (Python-Paketmanager)
-- **Betriebssystem-Unterstützung für PySide6:**
-  - **Windows:** Windows 10 (Version 1809) oder neuer.
-  - **macOS:** macOS 11 (Big Sur) oder neuer.
-  - **Linux:** Moderne Distributionen mit glibc 2.28 oder neuer.
+### Option 1 — Installer (empfohlen)
 
-### Abhängigkeiten
-Zu den Kernabhängigkeiten gehören:
-- `PySide6` (Qt für Python) - *Hinweis: Erfordert die oben genannten Betriebssystemversionen.*
-- `Pillow` (PIL) für die Bildverarbeitung.
+Laden Sie die neueste Version von [GitHub Releases](https://github.com/CompuMaxx/gba-background-studio/releases) herunter:
 
-Sie können die Abhängigkeiten installieren mit:
+| Installer | Python | Betriebssystem |
+|---|---|---|
+| `GBABackgroundStudio_Setup.exe` | Enthalten (keine Installation nötig) | Windows 10 / 11 |
+| `GBABackgroundStudio_Legacy_Setup.exe` | Enthalten (keine Installation nötig) | Windows 7 / 8 / 8.1 |
+
+Einfach den Installer ausführen und die App starten — kein Python oder pip erforderlich.
+
+---
+
+### Option 2 — Aus dem Quellcode ausführen
+
+#### Anforderungen
+
+| Umgebung | Python | Qt-Backend | Betriebssystem |
+|---|---|---|---|
+| **Modern** | 3.10+ | PySide6 (auto) | Windows 10/11, macOS 11+, Linux |
+| **Legacy** | 3.8 / 3.9 | PySide2 5.15.2 (auto) | Windows 7 / 8 / 8.1 |
+
+Die Anwendung erkennt automatisch, welches Qt-Backend basierend auf Ihrer Python-Version verwendet werden soll — keine manuelle Konfiguration erforderlich.
+
+#### Abhängigkeiten
+
 ```bash
 pip install -r requirements.txt
 ```
 
+`requirements.txt` installiert automatisch das richtige Qt-Backend:
+- **Python ≥ 3.10** → `PySide6`
+- **Python 3.8 / 3.9** → `PySide2 5.15.2`
+
+Weitere Abhängigkeiten: `Pillow`, `numpy`, `scipy`, `scikit-learn`, `opencv-python`, `certifi`.
+
 ---
 
 ### 🏛️ Unterstützung für Legacy-Systeme (Windows 7 / 8 / 8.1)
-Falls Sie eine ältere Windows-Version verwenden, die **PySide6** (das GUI-Framework) nicht unterstützt, können Sie die Konvertierungs-Engine über unseren **mehrsprachigen Befehlszeilen-Assistenten** nutzen.
 
-#### Anforderungen
-- **Python** (3.8+ empfohlen)
+Die vollständige grafische Oberfläche läuft auf Windows 7 und höher. Verwenden Sie **Python 3.8** und `requirements.txt` installiert automatisch **PySide2 5.15.2**.
 
-Dies ermöglicht die Konvertierung von Bildern in GBA-Assets ohne grafische Oberfläche, geführt durch einen Schritt-für-Schritt-Assistenten in Ihrer Landessprache.
+Alternativ steht der **Mehrsprachige Kommandozeilen-Assistent** (`GBA_Studio_Wizard.bat`) für Stapelkonvertierungen ohne die grafische Oberfläche zur Verfügung und funktioniert auf jeder Windows-Version mit Python 3.8+:
 
-1. Gehen Sie in das Projektverzeichnis.
-2. Starten Sie die Datei **`GBA_Studio_Wizard.bat`**.
+1. Navigieren Sie zum Stammverzeichnis des Projekts.
+2. Führen Sie **`GBA_Studio_Wizard.bat`** aus.
 3. Wählen Sie Ihre Sprache (18 Sprachen unterstützt).
-4. Folgen Sie den Anweisungen zum Drag-and-Drop Ihres Bildes und zur Konfiguration der GBA-Ausgabe.
+4. Folgen Sie den Schritt-für-Schritt-Anweisungen zur Konvertierung Ihres Bildes.
 
 ---
 

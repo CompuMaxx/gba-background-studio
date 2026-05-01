@@ -1,10 +1,11 @@
 # ui/dialogs/conversion_dialog.py
-from PySide6.QtWidgets import QDialog
+
 from PIL import Image as PilImage
 from .conversion_dialog_ui import ConversionDialogUI
 from .conversion_dialog_logic import ConversionDialogLogic
 from .conversion_dialog_config import ConversionDialogConfig
 from .auto_spinbox import AutoSpinBox
+from ui.qt_compat import QDialog
 
 class ConversionDialog(QDialog, ConversionDialogUI, ConversionDialogLogic, ConversionDialogConfig):
     @property

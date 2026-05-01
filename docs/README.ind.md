@@ -1,4 +1,4 @@
-<p align="center"><img width="1868" height="560" src="assets/readme/banner.png" alt="Image" /></p>
+<p align="center"><img width="1868" height="560" src="../assets/readme/banner.png" alt="Image" /></p>
 <div align="center"><a href="https://discord.gg/wsFFExCWFu"><img src="https://img.shields.io/discord/1073012182264066099" alt="Discord"></a></div>
 
 ## GBA Background Studio
@@ -14,7 +14,7 @@
 README ini tersedia dalam bahasa-bahasa berikut:
 
 <p align="center">
-  <a href="README.md">English</a> | <a href="README.spa.md">Español</a> | <a href="README.brp.md">Português (BR)</a> | <a href="README.fra.md">Français</a> | <a href="README.deu.md">Deutsch</a> | <a href="README.ita.md">Italiano</a> | <a href="README.por.md">Português</a> | <a href="README.nld.md">Nederlands</a> | <a href="README.pol.md">Polski</a><br>
+  <a href="../README.md">English</a> | <a href="README.spa.md">Español</a> | <a href="README.brp.md">Português (BR)</a> | <a href="README.fra.md">Français</a> | <a href="README.deu.md">Deutsch</a> | <a href="README.ita.md">Italiano</a> | <a href="README.por.md">Português</a> | <a href="README.nld.md">Nederlands</a> | <a href="README.pol.md">Polski</a><br>
   <a href="README.tur.md">Türkçe</a> | <a href="README.vie.md">Tiếng Việt</a> | <a href="README.ind.md">Bahasa Indonesia</a> | <a href="README.hin.md">हिन्दी</a> | <a href="README.rus.md">Русский</a> | <a href="README.jpn.md">日本語</a> | <a href="README.zhs.md">简体中文</a> | <a href="README.zht.md">繁體中文</a> | <a href="README.kor.md">한국어</a>
 </p>
 
@@ -57,19 +57,19 @@ README ini tersedia dalam bahasa-bahasa berikut:
 
 ## 🖼️ Tangkapan Layar
 
-<p align="center"><img width="896" height="590" src="assets/readme/ind_conversion_interfaz.png" alt="Image" /></p>
+<p align="center"><img width="896" height="590" src="../assets/readme/ind_conversion_interfaz.png" alt="Image" /></p>
 
-<p align="center"><img width="887" height="676" src="assets/readme/ind_preview.png" alt="Image" /></p>
+<p align="center"><img width="887" height="676" src="../assets/readme/ind_preview.png" alt="Image" /></p>
 
-<p align="center"><img width="887" height="676" src="assets/readme/ind_edit_tiles.png" alt="Image" /></p>
+<p align="center"><img width="887" height="676" src="../assets/readme/ind_edit_tiles.png" alt="Image" /></p>
 
-<p align="center"><img width="887" height="676" src="assets/readme/ind_edit_palettes.png" alt="Image" /></p>
+<p align="center"><img width="887" height="676" src="../assets/readme/ind_edit_palettes.png" alt="Image" /></p>
 
 ---
 
 ## 🏗️ Deskripsi Arsitektur
 
-GBA Background Studio dibangun dengan **Python** dan **PySide6**, mengikuti desain antarmuka modular:
+GBA Background Studio dibangun dengan **Python** dan **PySide6 / PySide2** (hibrida), mengikuti desain antarmuka modular:
 
 - **Jendela utama (`GBABackgroundStudio`)**
   - Mengelola status aplikasi (BPP saat ini, tingkat zoom, pemilihan tile dan palet).
@@ -93,38 +93,54 @@ GBA Background Studio dibangun dengan **Python** dan **PySide6**, mengikuti desa
 
 ## 📦 Instalasi
 
-### Persyaratan
-- **Python** (Direkomendasikan 3.12+)
-- **Pip** (Pengelola paket Python)
-- **Dukungan Sistem Operasi untuk PySide6:**
-  - **Windows:** Windows 10 (Versi 1809) atau yang lebih baru.
-  - **macOS:** macOS 11 (Big Sur) atau yang lebih baru.
-  - **Linux:** Distribusi modern dengan glibc 2.28 atau yang lebih baru.
+### Opsi 1 — Installer (direkomendasikan)
 
-### Dependensi
-Dependensi utama meliputi:
-- `PySide6` (Qt untuk Python) - *Catatan: Membutuhkan versi OS yang disebutkan di atas.*
-- `Pillow` (PIL) untuk pemrosesan gambar.
+Unduh versi terbaru dari [GitHub Releases](https://github.com/CompuMaxx/gba-background-studio/releases):
 
-Anda dapat menginstal dependensi menggunakan:
+| Installer | Python | OS |
+|---|---|---|
+| `GBABackgroundStudio_Setup.exe` | Terpadu (tidak perlu instalasi) | Windows 10 / 11 |
+| `GBABackgroundStudio_Legacy_Setup.exe` | Terpadu (tidak perlu instalasi) | Windows 7 / 8 / 8.1 |
+
+Cukup jalankan installer dan luncurkan aplikasi — tidak perlu Python atau pip.
+
+---
+
+### Opsi 2 — Jalankan dari sumber
+
+#### Persyaratan
+
+| Lingkungan | Python | Backend Qt | OS |
+|---|---|---|---|
+| **Modern** | 3.10+ | PySide6 (otomatis) | Windows 10/11, macOS 11+, Linux |
+| **Legacy** | 3.8 / 3.9 | PySide2 5.15.2 (otomatis) | Windows 7 / 8 / 8.1 |
+
+Aplikasi secara otomatis mendeteksi backend Qt mana yang akan digunakan berdasarkan versi Python Anda — tidak diperlukan konfigurasi manual.
+
+#### Dependensi
+
 ```bash
 pip install -r requirements.txt
 ```
 
+`requirements.txt` secara otomatis menginstal backend Qt yang tepat:
+- **Python ≥ 3.10** → `PySide6`
+- **Python 3.8 / 3.9** → `PySide2 5.15.2`
+
+Dependensi lainnya: `Pillow`, `numpy`, `scipy`, `scikit-learn`, `opencv-python`, `certifi`.
+
 ---
 
-### 🏛️ Dukungan OS Legacy (Windows 7 / 8 / 8.1)
-Jika Anda menggunakan versi Windows lama yang tidak mendukung **PySide6** (framework GUI), Anda tetap bisa menggunakan mesin konversi melalui **Wizard Baris Perintah Multibahasa** kami.
+### 🏛️ Dukungan untuk Sistem Legacy (Windows 7 / 8 / 8.1)
 
-#### Persyaratan
-- **Python** (Direkomendasikan 3.8+)
+Antarmuka grafis lengkap berjalan di Windows 7 dan yang lebih baru. Gunakan **Python 3.8** dan `requirements.txt` akan secara otomatis menginstal **PySide2 5.15.2**.
 
-Ini memungkinkan Anda untuk mengonversi gambar ke aset GBA tanpa antarmuka grafis, menggunakan asisten langkah-demi-langkah dalam bahasa lokal Anda.
+Sebagai alternatif, **Asisten Baris Perintah Multibahasa** (`GBA_Studio_Wizard.bat`) tersedia untuk konversi batch tanpa GUI, dan berfungsi di versi Windows mana pun dengan Python 3.8+:
 
-1. Buka direktori utama proyek.
-2. Jalankan file **`GBA_Studio_Wizard.bat`**.
-3. Pilih bahasa Anda (mendukung 18 bahasa).
-4. Ikuti instruksi untuk menyeret gambar dan mengonfigurasi output GBA.
+1. Navigasikan ke direktori root proyek.
+2. Jalankan **`GBA_Studio_Wizard.bat`**.
+3. Pilih bahasa Anda (18 bahasa didukung).
+4. Ikuti instruksi langkah demi langkah untuk mengonversi gambar Anda.
 
 ---
 

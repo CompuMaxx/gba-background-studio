@@ -1,15 +1,19 @@
 # ui/dialogs/save_tilemap_dialog.py
-from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QLabel, QComboBox, QPushButton
-)
+
 from core.config import ROT_SIZES_SET as _ROT_SIZES
+from ui.qt_compat import (
+    QDialog,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QComboBox,
+    QPushButton
+)
 
 _TEXT_TO_ROT_SIZES = {(32, 32), (64, 64)}
 
-
 def _is_text_rot_compatible(w, h):
     return (w, h) in _TEXT_TO_ROT_SIZES
-
 
 def _is_rot_text_compatible(w, h):
     if w <= 32:
@@ -18,14 +22,12 @@ def _is_rot_text_compatible(w, h):
         return True
     return False
 
-
 def _has_flips(tilemap_data):
     for i in range(len(tilemap_data) // 2):
         entry = tilemap_data[i*2] | (tilemap_data[i*2+1] << 8)
         if entry & (1 << 10) or entry & (1 << 11):
             return True
     return False
-
 
 def _text_to_rotation(tilemap_data, w, h):
     n = w * h
@@ -39,7 +41,6 @@ def _text_to_rotation(tilemap_data, w, h):
         entry = linear[i*2] | (linear[i*2+1] << 8)
         out[i] = entry & 0xFF
     return bytes(out)
-
 
 def _rotation_to_text(tilemap_data, w, h):
     n = w * h
@@ -61,7 +62,6 @@ def _rotation_to_text(tilemap_data, w, h):
             out.extend((tile_id & 0x3FF).to_bytes(2, 'little'))
         return bytes(out)
     return bytes(linear)
-
 
 class SaveTilemapDialog(QDialog):
     def __init__(self, parent=None, sel_w=None, sel_h=None):

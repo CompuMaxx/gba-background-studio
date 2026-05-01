@@ -1,10 +1,27 @@
 # ui/tilemap_utils.py
-from PySide6.QtWidgets import (
-    QFrame, QVBoxLayout, QHBoxLayout, QLabel, QSpinBox, QPushButton, QCheckBox
-)
-from PySide6.QtCore import Qt
-from core.config import ROT_SIZES, ROT_SIZES_SET
 
+from core.config import ROT_SIZES, ROT_SIZES_SET
+from ui.qt_compat import (
+    QFrame,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QSpinBox,
+    QPushButton,
+    QCheckBox,
+    Qt,
+    QPen,
+    QColor,
+    QPixmap,
+    QPainter,
+    QImage,
+    QBrush,
+    QGraphicsRectItem,
+    QDialog,
+    QListWidget,
+    QDialogButtonBox,
+    exec_dialog,
+)
 
 class TilemapUtils:
     @property
@@ -26,6 +43,7 @@ class TilemapUtils:
         self.tilemap_view.on_tile_leave         = self.on_tilemap_leave
         self.tilemap_view.on_tile_release       = self._on_tile_release_dispatch
         self.tilemap_view.on_selection_complete = self._on_area_selection_complete
+        self.tilemap_view.on_selection_hover = self._on_area_selection_hover
 
     def _toolbar(self):
         return getattr(getattr(self, 'main_window', None), 'context_toolbar', None)
@@ -56,7 +74,7 @@ class TilemapUtils:
         return (entry >> 12) & 0xF
 
     def _select_tiles_by_palette(self, palette_id):
-        from PySide6.QtGui import QPen, QColor
+
         self._clear_pal_selection()
         if not self.tilemap_data or self.tilemap_width == 0 or self.tilemap_height == 0:
             return
@@ -81,7 +99,7 @@ class TilemapUtils:
             tb.on_pal_selection_changed(bool(self._pal_sel_items))
 
     def _flood_fill_by_palette(self, start_x, start_y, palette_id):
-        from PySide6.QtGui import QPen, QColor
+
         from collections import deque
         self._clear_pal_selection()
         if not self.tilemap_data or self.tilemap_width == 0 or self.tilemap_height == 0:
@@ -143,6 +161,11 @@ class TilemapUtils:
         if not active:
             self._clear_tilemap_area_selection()
 
+    def _on_area_selection_hover(self, x1, y1, x2, y2):
+        mw = getattr(self, 'main_window', None)
+        if mw and hasattr(mw, 'custom_status_bar'):
+            mw.custom_status_bar.update_selection_status(x1, y1, x2, y2, mw.zoom_level)
+
     def _on_area_selection_complete(self, x1, y1, x2, y2):
         self._clear_tilemap_selection()
         self._tilemap_sel_area = (x1, y1, x2, y2)
@@ -150,6 +173,10 @@ class TilemapUtils:
         tb = self._toolbar()
         if tb is not None:
             tb.on_area_selected(True)
+        mw = getattr(self, 'main_window', None)
+        if mw and hasattr(mw, 'custom_status_bar'):
+            mw.custom_status_bar.update_selection_status(x1, y1, x2, y2, mw.zoom_level)
+            mw.custom_status_bar.set_sel_area_info(x2 - x1 + 1, y2 - y1 + 1)
 
     def _clear_tilemap_area_selection(self):
         self._tilemap_sel_area = None
@@ -163,9 +190,13 @@ class TilemapUtils:
         tb = self._toolbar()
         if tb is not None:
             tb.on_area_selected(False)
+        mw = getattr(self, 'main_window', None)
+        if mw and hasattr(mw, 'custom_status_bar'):
+            mw.custom_status_bar.restore_default_status(mw.zoom_level)
+            mw.custom_status_bar.clear_sel_area_info()
 
     def _draw_tilemap_area_rect(self, x1, y1, x2, y2):
-        from PySide6.QtGui import QPen, QColor
+
         try:
             if self._tilemap_sel_area_item is not None:
                 if self._tilemap_sel_area_item.scene():
@@ -357,7 +388,7 @@ class TilemapUtils:
         self._start_paste_mode()
 
     def _build_paste_pixmap(self):
-        from PySide6.QtGui import QPixmap, QPainter, QImage
+
         et = getattr(getattr(self, 'main_window', None), 'edit_tiles_tab', None)
         if not et or not getattr(et, 'tileset_img', None):
             px = QPixmap(self._paste_buf_w * 8, self._paste_buf_h * 8)
@@ -391,8 +422,9 @@ class TilemapUtils:
                         idx_c = int(tile[py, px_i]) % 16
                         r, g, b = palette[slot + idx_c]
                         canvas[row_i*8+py, col_i*8+px_i] = [r, g, b, 180]
-        img = QImage(canvas.tobytes(), w_px, h_px, w_px * 4, QImage.Format_RGBA8888)
-        return QPixmap.fromImage(img)
+        img_data = canvas.tobytes()
+        img = QImage(img_data, w_px, h_px, w_px * 4, QImage.Format_RGBA8888)
+        return QPixmap.fromImage(img.copy())
 
     def _start_paste_mode(self):
         pixmap = self._build_paste_pixmap()
@@ -595,7 +627,7 @@ class TilemapUtils:
                 state_type='tilemap_shift',
                 editor_type='tiles',
                 data={'old_data': old_data, 'new_data': new_data, 'w': w, 'h': h},
-                description=translator._tr('tilemap_shift_desc', direction=direction)
+                description=self._tr('tilemap_shift_desc', direction=direction)
             )
 
         import os
@@ -669,7 +701,7 @@ class TilemapUtils:
         if requires_gba_adjustment:
             from ui.dialogs.gba_compatibility_dialog import GBACompatibilityDialog
             dlg = GBACompatibilityDialog(new_w, new_h, adjusted_w, adjusted_h, self)
-            if dlg.exec():
+            if exec_dialog(dlg):
                 final_new_w = adjusted_w
                 final_new_h = adjusted_h
                 self.tilemap_width_spin.setValue(final_new_w)
@@ -862,9 +894,8 @@ class TilemapUtils:
         self.resize_button.setFixedWidth(100)
         self.resize_button.setFixedHeight(20)
         self.resize_button.setStyleSheet("QPushButton { font-size: 8pt; padding: 0px; }")
-        self.resize_button.clicked.connect(self.on_tilemap_resize)
+        self.resize_button.clicked.connect(self._on_resize_clicked)
         row.addWidget(self.resize_button)
-
         btn_style = "QPushButton { font-weight: bold; padding: 0px; font-size: 7pt; }"
         self.btn_up    = QPushButton("↑")
         self.btn_left  = QPushButton("←")
@@ -895,8 +926,56 @@ class TilemapUtils:
 
         controls_layout.addLayout(row)
 
+        self.tilemap_width_spin.valueChanged.connect(self._update_crop_mask)
+        self.tilemap_height_spin.valueChanged.connect(self._update_crop_mask)
+
         self._set_tilemap_controls_enabled(False)
         return controls_frame
+
+    def _update_crop_mask(self):
+        self._clear_crop_mask()
+        if not getattr(self, 'tilemap_data', None) or not getattr(self, 'tilemap_width', 0) or not getattr(self, 'tilemap_height', 0):
+            return
+        new_w = self.tilemap_width_spin.value()
+        new_h = self.tilemap_height_spin.value()
+        cur_w = self.tilemap_width
+        cur_h = self.tilemap_height
+        if new_w >= cur_w and new_h >= cur_h:
+            return
+
+        mask_color = QColor(220, 50, 50, 100)
+        no_pen = QPen(Qt.NoPen)
+        self._crop_mask_items = []
+        scene = self.tilemap_scene
+        if new_w < cur_w:
+            x = new_w * 8
+            w = (cur_w - new_w) * 8
+            h = min(new_h, cur_h) * 8
+            if h > 0:
+                item = scene.addRect(x, 0, w, h, no_pen, QBrush(mask_color))
+                item.setZValue(150)
+                self._crop_mask_items.append(item)
+        if new_h < cur_h:
+            y = new_h * 8
+            w = cur_w * 8
+            h = (cur_h - new_h) * 8
+            item = scene.addRect(0, y, w, h, no_pen, QBrush(mask_color))
+            item.setZValue(150)
+            self._crop_mask_items.append(item)
+        self.tilemap_view.viewport().update()
+
+    def _clear_crop_mask(self):
+        for item in getattr(self, '_crop_mask_items', []):
+            try:
+                if item.scene():
+                    self.tilemap_scene.removeItem(item)
+            except RuntimeError:
+                pass
+        self._crop_mask_items = []
+
+    def _on_resize_clicked(self):
+        self._clear_crop_mask()
+        self.on_tilemap_resize()
 
     def retranslate_tilemap_toolbar(self):
         self._toolbar_width_label.setText(self._tr("tilemap_width_label"))
@@ -913,18 +992,20 @@ class TilemapUtils:
             self.cyclic_checkbox,
         ):
             widget.setEnabled(enabled)
+        if not enabled:
+            self._clear_crop_mask()
 
     def enable_tilemap_controls(self):
         self._set_tilemap_controls_enabled(True)
 
     def _ask_rotation_size(self, attempted_w, attempted_h):
-        from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QListWidget, QDialogButtonBox
+
         dlg = QDialog(self.main_window if self.main_window else None)
-        dlg.setWindowTitle(translator._tr("invalid_rot_size_title_dialog"))
+        dlg.setWindowTitle(self._tr("invalid_rot_size_title_dialog"))
         dlg.setFixedWidth(320)
         layout = QVBoxLayout(dlg)
         layout.addWidget(QLabel(
-            translator._tr("invalid_rot_size_message", w=attempted_w, h=attempted_h)
+            self._tr("invalid_rot_size_message", w=attempted_w, h=attempted_h)
         ))
         lst = QListWidget()
         labels = ["16×16 (128×128 px)", "32×32 (256×256 px)",
@@ -937,7 +1018,7 @@ class TilemapUtils:
         btns.accepted.connect(dlg.accept)
         btns.rejected.connect(dlg.reject)
         layout.addWidget(btns)
-        if dlg.exec() != QDialog.Accepted:
+        if exec_dialog(dlg) != QDialog.Accepted:
             return None
         return ROT_SIZES[lst.currentRow()]
 
@@ -981,7 +1062,7 @@ class TilemapUtils:
                 data={'old_w': old_w, 'old_h': old_h,
                       'new_w': new_w, 'new_h': new_h,
                       'old_data': old_data, 'new_data': new_data},
-                description=translator._tr('tilemap_resize_desc', old_w=old_w, old_h=old_h, new_w=new_w, new_h=new_h)
+                description=self._tr('tilemap_resize_desc', old_w=old_w, old_h=old_h, new_w=new_w, new_h=new_h)
             )
 
         save_preview = keep_transparent = False

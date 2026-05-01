@@ -1,9 +1,21 @@
 # ui/color_editor.py
-from PySide6.QtWidgets import QWidget, QGridLayout, QLabel, QSlider, QLineEdit, QHBoxLayout
-from PySide6.QtGui import QFont, QColor, QIntValidator, QKeyEvent, QBrush, QValidator
-from PySide6.QtCore import Qt, Signal
-from PySide6.QtCore import Qt
 
+from ui.qt_compat import (
+    QWidget,
+    QGridLayout,
+    QLabel,
+    QSlider,
+    QLineEdit,
+    QHBoxLayout,
+    QFont,
+    QColor,
+    QIntValidator,
+    QKeyEvent,
+    QBrush,
+    QValidator,
+    Qt,
+    Signal
+)
 class Max255Validator(QValidator):
     def validate(self, input, pos):
         if not input:
@@ -28,7 +40,6 @@ class NoUndoLineEdit(QLineEdit):
             return
             
         super().keyPressEvent(event)
-
 
 class ColorEditor(QWidget):
     color_updated = Signal(int, int, int, int, bool)

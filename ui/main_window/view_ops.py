@@ -1,6 +1,5 @@
 # ui/main_window/view_ops.py
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QGraphicsView
+from ui.qt_compat import Qt, QGraphicsView
 
 def setup_wheel_events(main_window):
     main_window.preview_tab.preview_image_view.wheelEvent = lambda event: zoom_wheel_event(main_window, main_window.preview_tab.preview_image_view, event)
@@ -83,10 +82,23 @@ def apply_zoom_to_all(main_window):
 
 def apply_zoom_to_view(main_window, view, zoom_factor):
     if view and view.scene() and view.scene().items():
+        h_bar = view.horizontalScrollBar()
+        v_bar = view.verticalScrollBar()
+        h_range = h_bar.maximum() - h_bar.minimum()
+        v_range = v_bar.maximum() - v_bar.minimum()
+        h_frac = (h_bar.value() - h_bar.minimum()) / h_range if h_range > 0 else 0.5
+        v_frac = (v_bar.value() - v_bar.minimum()) / v_range if v_range > 0 else 0.5
+        has_scroll = h_range > 0 or v_range > 0
+
         view.resetTransform()
         view.scale(zoom_factor, zoom_factor)
-        if view.scene().items():
+        if not has_scroll:
             view.centerOn(view.scene().items()[0])
+        else:
+            new_h_range = view.horizontalScrollBar().maximum() - view.horizontalScrollBar().minimum()
+            new_v_range = view.verticalScrollBar().maximum() - view.verticalScrollBar().minimum()
+            view.horizontalScrollBar().setValue(int(view.horizontalScrollBar().minimum() + h_frac * new_h_range))
+            view.verticalScrollBar().setValue(int(view.verticalScrollBar().minimum() + v_frac * new_v_range))
         
         if (main_window.grid_manager.is_grid_visible() and 
             _is_editor_view(main_window, view)):

@@ -1,20 +1,43 @@
 # ui/edit_palettes_tab.py
 import os
 
-from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QSplitter, QGraphicsView, QGraphicsScene,
-    QHBoxLayout, QGraphicsPixmapItem, QFrame, QSlider, QSizePolicy, QGridLayout,
-    QGraphicsRectItem, QLineEdit, QSpinBox, QPushButton, QCheckBox
-)
-from PySide6.QtGui import QFont, QBrush, QPen, QColor, QPainter, QPixmap, QIntValidator
-from PySide6.QtCore import Qt, Signal, QTimer, QSize
-
 from PIL import Image as PilImage
 from ui.shared_utils import CustomGraphicsView, update_status_bar_shared, pil_to_qimage
 from ui.shared_utils import CustomGraphicsView, update_status_bar_shared
 from ui.palette_grid_view import PaletteGridView
 from ui.color_editor import ColorEditor
 from ui.tilemap_utils import TilemapUtils
+from ui.qt_compat import (
+    QWidget,
+    QVBoxLayout,
+    QLabel,
+    QSplitter,
+    QGraphicsView,
+    QGraphicsScene,
+    QHBoxLayout,
+    QGraphicsPixmapItem,
+    QFrame,
+    QSlider,
+    QSizePolicy,
+    QGridLayout,
+    QGraphicsRectItem,
+    QLineEdit,
+    QSpinBox,
+    QPushButton,
+    QCheckBox,
+    QFont,
+    QBrush,
+    QPen,
+    QColor,
+    QPainter,
+    QPixmap,
+    QIntValidator,
+    Qt,
+    Signal,
+    QTimer,
+    QSize,
+    QImage
+)
 
 EMPTY_TILE_ENTRY = b'\x00\x00'
 
@@ -92,9 +115,13 @@ class EditPalettesTab(TilemapUtils, QWidget):
         self._sync_tilemap_width_to_tiles_tab(tilemap_width)
     
     def _get_min_left_container_width(self):
-        """Get actual minimum width for the palettes container based on content"""
-        if hasattr(self, 'splitter') and self.splitter.sizes():
-            return self.splitter.sizes()[0]
+        """Get true minimum width for the palettes container based on widget hints"""
+        if hasattr(self, 'splitter') and self.splitter.count() > 0:
+            left_widget = self.splitter.widget(0)
+            if left_widget is not None:
+                hint = left_widget.minimumSizeHint()
+                if hint.isValid() and hint.width() > 0:
+                    return hint.width()
         return 250
     
     def _sync_tilemap_width_to_tiles_tab(self, tilemap_width):
@@ -122,7 +149,7 @@ class EditPalettesTab(TilemapUtils, QWidget):
         tiles_tab._syncing_splitter = False
     
     def sync_splitter_on_tab_change(self):
-        """Sync splitter sizes when this tab becomes active"""
+        """Sync THIS tab's splitter to match the tiles tab when Edit Palettes becomes active"""
         if not self.main_window or not hasattr(self.main_window, 'edit_tiles_tab'):
             return
             
@@ -130,22 +157,28 @@ class EditPalettesTab(TilemapUtils, QWidget):
         if not hasattr(tiles_tab, 'splitter'):
             return
             
-        pal_sizes = self.splitter.sizes()
         tiles_sizes = tiles_tab.splitter.sizes()
+        pal_sizes = self.splitter.sizes()
         
-        if len(pal_sizes) != 2 or len(tiles_sizes) != 2:
+        if len(tiles_sizes) != 2 or len(pal_sizes) != 2:
             return
             
-        pal_left_width = pal_sizes[0]
-        pal_tilemap_width = pal_sizes[1]
+        tiles_left_width = tiles_sizes[0]
+        tiles_tilemap_width = tiles_sizes[1]
         
-        tiles_total_width = sum(tiles_sizes)
-        new_tiles_tilemap_width = min(pal_tilemap_width, tiles_total_width - pal_left_width)
-        new_tiles_left_width = tiles_total_width - new_tiles_tilemap_width
+        pal_total_width = sum(pal_sizes)
+        pal_min_left_width = self._get_min_left_container_width()
         
-        tiles_tab._syncing_splitter = True
-        tiles_tab.splitter.setSizes([new_tiles_left_width, new_tiles_tilemap_width])
-        tiles_tab._syncing_splitter = False
+        new_pal_left_width = max(tiles_left_width, pal_min_left_width)
+        new_pal_tilemap_width = pal_total_width - new_pal_left_width
+        
+        if new_pal_tilemap_width < 0:
+            new_pal_tilemap_width = 0
+            new_pal_left_width = pal_total_width
+        
+        self._syncing_splitter = True
+        self.splitter.setSizes([new_pal_left_width, new_pal_tilemap_width])
+        self._syncing_splitter = False
 
     def setup_ui(self):
         self.layout = QVBoxLayout(self)
@@ -164,7 +197,6 @@ class EditPalettesTab(TilemapUtils, QWidget):
         main_splitter.setChildrenCollapsible(False)
         main_splitter.setHandleWidth(6)
         self.splitter = main_splitter
-
 
         palettes_container = self.create_palettes_container()
         main_splitter.addWidget(palettes_container)
@@ -310,17 +342,17 @@ class EditPalettesTab(TilemapUtils, QWidget):
         return -1
 
     def _move_color_press(self, event):
-        from PySide6.QtWidgets import QGraphicsView
+
         if event.button() == Qt.LeftButton:
             self._move_color_src = self._palette_index_at(event.pos())
         QGraphicsView.mousePressEvent(self.full_palette_view, event)
 
     def _move_color_move(self, event):
-        from PySide6.QtWidgets import QGraphicsView
+
         QGraphicsView.mouseMoveEvent(self.full_palette_view, event)
 
     def _move_color_release(self, event):
-        from PySide6.QtWidgets import QGraphicsView
+
         if event.button() == Qt.LeftButton and self._move_color_src is not None:
             dst = self._palette_index_at(event.pos())
             src = self._move_color_src
@@ -330,17 +362,17 @@ class EditPalettesTab(TilemapUtils, QWidget):
         QGraphicsView.mouseReleaseEvent(self.full_palette_view, event)
 
     def _swap_color_press(self, event):
-        from PySide6.QtWidgets import QGraphicsView
+
         if event.button() == Qt.LeftButton:
             self._swap_color_src = self._palette_index_at(event.pos())
         QGraphicsView.mousePressEvent(self.full_palette_view, event)
 
     def _swap_color_move(self, event):
-        from PySide6.QtWidgets import QGraphicsView
+
         QGraphicsView.mouseMoveEvent(self.full_palette_view, event)
 
     def _swap_color_release(self, event):
-        from PySide6.QtWidgets import QGraphicsView
+
         if event.button() == Qt.LeftButton and self._swap_color_src is not None:
             dst = self._palette_index_at(event.pos())
             src = self._swap_color_src
@@ -392,7 +424,7 @@ class EditPalettesTab(TilemapUtils, QWidget):
         self._apply_palette_op(new_colors, lut, f"Move color {src} -> {dst}", cursor_index=lut[src], remap_images=True)
 
     def _move_palette_press(self, event):
-        from PySide6.QtWidgets import QGraphicsView
+
         if event.button() == Qt.LeftButton:
             idx = self._palette_index_at(event.pos())
             if idx >= 0:
@@ -402,13 +434,13 @@ class EditPalettesTab(TilemapUtils, QWidget):
         QGraphicsView.mousePressEvent(self.full_palette_view, event)
 
     def _move_palette_move(self, event):
-        from PySide6.QtWidgets import QGraphicsView
+
         if self._move_palette_src is not None and self._move_palette_drag_item is not None:
             self._show_palette_drag(event.pos())
         QGraphicsView.mouseMoveEvent(self.full_palette_view, event)
 
     def _move_palette_release(self, event):
-        from PySide6.QtWidgets import QGraphicsView
+
         self._hide_palette_drag()
         if event.button() == Qt.LeftButton and self._move_palette_src is not None:
             idx = self._palette_index_at(event.pos())
@@ -424,7 +456,7 @@ class EditPalettesTab(TilemapUtils, QWidget):
 
     def _build_palette_drag_pixmap(self, slot):
         """Build a QGraphicsPixmapItem (16x1 grid, 12px cells) for the 16 colors of a slot."""
-        from PySide6.QtGui import QPixmap, QPainter, QColor
+
         CELL = 12
         px = QPixmap(16 * CELL, CELL)
         px.fill(Qt.transparent)
@@ -1087,9 +1119,9 @@ class EditPalettesTab(TilemapUtils, QWidget):
         indices = (tile_arr % 16).astype(np.uint8)
         rgb = lut[indices]
 
-        from PySide6.QtGui import QImage
-        tile_img = QImage(rgb.tobytes(), 8, 8, 8 * 3, QImage.Format_RGB888)
-        tile_pixmap = QPixmap.fromImage(tile_img)
+        rgb_data = rgb.tobytes()
+        tile_img = QImage(rgb_data, 8, 8, 8 * 3, QImage.Format_RGB888)
+        tile_pixmap = QPixmap.fromImage(tile_img.copy())
 
         scene_pixmap = self._pixmap_item.pixmap()
         painter = QPainter(scene_pixmap)

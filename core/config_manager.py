@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 class ConfigManager:
-    APP_VERSION = "1.1.0"
+    APP_VERSION = "2.0.0"
     
     def __init__(self, config_file="config.ini"):
         self.config_file = config_file
@@ -39,7 +39,8 @@ class ConfigManager:
                 'overlay_alpha': '128'
             }
             self.config['PATHS'] = {
-                'last_image_directory': ''
+                'last_image_directory': '',
+                'last_save_directory': ''
             }
             self.config['CONVERSION'] = {
                 'bpp': '0',

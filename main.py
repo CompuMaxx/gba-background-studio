@@ -4,6 +4,7 @@ import sys
 import importlib
 import time
 import threading
+from ui.qt_compat import QApplication, QMessageBox, QFileDialog, QIcon, exec_dialog, exec_app
 
 os.environ['JOBLIB_WORKER_COUNT'] = '4'
 os.environ['JOBLIB_MULTIPROCESSING'] = '0'
@@ -25,7 +26,7 @@ def _install_exception_hook(translator=None):
         tb_str = ''.join(traceback.format_exception(exc_type, exc_value, exc_tb))
         print(tb_str)
         try:
-            from PySide6.QtWidgets import QApplication, QMessageBox
+
             app = QApplication.instance()
             if app is not None:
                 msg = QMessageBox()
@@ -34,7 +35,7 @@ def _install_exception_hook(translator=None):
                 msg.setText(_tr('error_dialog_text'))
                 msg.setDetailedText(tb_str)
                 msg.setStandardButtons(QMessageBox.Ok)
-                msg.exec()
+                exec_dialog(msg)
         except Exception:
             pass
 
@@ -42,7 +43,7 @@ def _install_exception_hook(translator=None):
 
 def warm_up_system_resources():
     try:
-        from PySide6.QtWidgets import QFileDialog
+
         _ = QFileDialog()
     except:
         pass
@@ -52,10 +53,7 @@ def main():
     if script_dir not in sys.path:
         sys.path.insert(0, script_dir)
     
-    from PySide6.QtWidgets import QApplication
-    from PySide6.QtGui import QIcon
-    from PySide6.QtCore import QLoggingCategory
-    QLoggingCategory.setFilterRules("qt.text.font.db=false")
+
     app = QApplication(sys.argv)
 
     if os.name == 'nt':
@@ -89,9 +87,9 @@ def main():
     splash.show()
     
     libraries_to_preload = [
-        "PySide6.QtCore",
-        "PySide6.QtGui", 
-        "PySide6.QtWidgets",
+        "PySide2.QtCore",
+        "PySide2.QtGui", 
+        "PySide2.QtWidgets",
         "PIL.Image",
         "PIL.ImageOps",
         "core.image_utils",
@@ -134,7 +132,7 @@ def main():
 
     threading.Thread(target=warm_up_system_resources, daemon=True).start()
     
-    sys.exit(app.exec())
+    sys.exit(exec_app(app))
 
 if __name__ == "__main__":
     main()
