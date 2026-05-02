@@ -76,6 +76,8 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+build_app.bat
+GBABackgroundStudio.spec
 
 # === OS Generated ===
 .DS_Store
@@ -106,6 +108,7 @@ config.ini
 *.tmp  
 *.txt  
 !changelog.txt  
+!requirements.txt  
 
 # === Graphics and Assets ===
 # Ignore common image files EXCEPT assets/

@@ -1,0 +1,8 @@
+Pillow<=12.2.0
+numpy<=2.4.4
+scipy<=1.17.1
+scikit-learn<=1.8.0
+certifi<=2026.4.22
+opencv-python<=4.13.0.92
+PySide6==6.11.0; python_version >= "3.10"
+PySide2==5.15.2; python_version < "3.10"

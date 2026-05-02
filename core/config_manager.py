@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 class ConfigManager:
-    APP_VERSION = "2.0.0"
+    APP_VERSION = "2.0.1"
     
     def __init__(self, config_file="config.ini"):
         self.config_file = config_file

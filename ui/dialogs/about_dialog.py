@@ -215,7 +215,11 @@ class AboutDialog(QDialog):
         install_path = self._get_install_path()
 
         if install_path:
-            updater_url = self._find_asset_url(data.get("assets", []), "Updater.exe")
+            import sys
+            is_legacy = sys.version_info < (3, 9)
+            asset_name = "Updater_Legacy.exe" if is_legacy else "Updater.exe"
+
+            updater_url = self._find_asset_url(data.get("assets", []), asset_name)
             if not updater_url:
                 webbrowser.open(RELEASES_URL)
                 return
@@ -232,12 +236,14 @@ class AboutDialog(QDialog):
     def _on_updater_downloaded(self, exe_path: str, install_path: str):
         import subprocess
         try:
-            subprocess.Popen([
-                exe_path,
-                f'/DIR="{install_path}"',
-                "/VERYSILENT",
-                "/SUPPRESSMSGBOXES"
-            ])
+            subprocess.Popen(
+                [
+                    exe_path,
+                    f"/DIR={install_path}",
+                ],
+                creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP,
+                close_fds=True,
+            )
         except Exception as e:
             QMessageBox.critical(self, self._tr("update_error_title"), str(e))
             return
