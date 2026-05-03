@@ -1,11 +1,24 @@
-Version: 2.0.0
-Date: May 1st, 2026
+Version: 2.0.1
+Date: May 2nd, 2026
 
 Official Discord Server: https://discord.gg/wsFFExCWFu
 
 Please report any issues on GitHub: [https://github.com/CompuMaxx/gba-background-studio/issues](https://github.com/CompuMaxx/gba-background-studio/issues)
 
 ---
+
+## [2.0.1] - 2026-05-02
+
+### Added
+- `requirements.txt` is now tracked in the repository with pinned maximum versions for the modern edition and upper bounds for the legacy edition, ensuring reproducible builds and preventing dependency conflicts between compilations.
+
+### Changed
+- Migrated to Pillow 12.2.0: file opening is now up to 15× faster and saving up to 9× faster thanks to lazy plugin loading introduced in this version.
+
+### Fixed
+- Fixed the auto-updater not launching after download: the updater process is now started with `DETACHED_PROCESS` so it survives the application exit, and the embedded quotes in the `/DIR=` argument that caused Inno Setup to silently fail have been removed.
+- The auto-updater now detects the running edition (modern/legacy) via `sys.version_info` and downloads the correct asset (`Updater.exe` for Python 3.10+ or `Updater_Legacy.exe` for Python 3.8), preventing dependency conflicts between editions.
+- The Updater now aborts with an informational message and opens the releases page in the browser if no previous installation is found in the Windows registry, instead of attempting to install in an incorrect location.
 
 ## [2.0.0] - 2026-05-01
 
